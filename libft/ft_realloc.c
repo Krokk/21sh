@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/02 14:21:04 by jecarol           #+#    #+#             */
-/*   Updated: 2016/12/02 15:49:41 by jecarol          ###   ########.fr       */
+/*   Created: 2017/06/01 18:01:03 by rfabre            #+#    #+#             */
+/*   Updated: 2017/08/17 14:02:03 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_freejoin(char const *s1, char const *s2)
+void	*ft_realloc(void *ptr, size_t prev_size, size_t new_size)
 {
-	char *joined;
+	void	*new;
 
-	if (!s1 || !s2)
+	if (!ptr)
 		return (NULL);
-	joined = ft_strnew((ft_strlen(s1) + ft_strlen(s2)));
-	if (!joined)
+	if (!(new = ft_memalloc(new_size)))
+	{
+		free(ptr);
 		return (NULL);
-	ft_strcpy(joined, s1);
-	free(&s1);
-	ft_strcat(joined, s2);
-	free(&s2);
-	return (joined);
+	}
+	ft_memcpy(new, ptr, prev_size < new_size ? prev_size : new_size);
+	free(ptr);
+	return (new);
 }

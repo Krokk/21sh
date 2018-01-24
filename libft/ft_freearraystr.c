@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printstrs.c                                     :+:      :+:    :+:   */
+/*   ft_freearraystr.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/14 15:49:43 by jecarol           #+#    #+#             */
-/*   Updated: 2017/01/18 00:38:28 by jecarol          ###   ########.fr       */
+/*   Created: 2017/08/19 12:49:51 by rfabre            #+#    #+#             */
+/*   Updated: 2017/09/03 21:40:06 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void		ft_printstrs(char **str)
+void	ft_freearraystr(char **array)
 {
-	int i;
+	int	i;
 
-	i = 0;
-	while (str[i])
+	if (array)
 	{
-		ft_putstr(str[i]);
-		ft_putchar('\n');
-		i++;
+		i = -1;
+		while (array[++i])
+		{
+			ft_strdel(&array[i]);
+			free(array[i]);
+		}
+		free(array);
 	}
 }

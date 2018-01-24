@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstforeach.c                                    :+:      :+:    :+:   */
+/*   ft_strcspn.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rlkcmptr <rlkcmptr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/09 17:29:10 by rlkcmptr          #+#    #+#             */
-/*   Updated: 2017/03/09 17:31:48 by rlkcmptr         ###   ########.fr       */
+/*   Created: 2017/06/17 14:19:08 by rfabre            #+#    #+#             */
+/*   Updated: 2017/06/17 18:35:29 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	       ft_lstforeach(t_list *begin_list, void (*f)(void *))
+size_t	ft_strcspn(const char *s1, char s2)
 {
-	while (begin_list)
+	int	i;
+
+	i = 0;
+	if (s1 && s2)
 	{
-		(*f)(begin_list->content);
-		begin_list = begin_list->next;
+		while (s1[i] != '\0' && s2 != '\0' && s1[i] != s2)
+			i++;
 	}
+	return (i);
 }

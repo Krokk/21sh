@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strmapi.c                                       :+:      :+:    :+:   */
+/*   ft_lstaddend.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/01 19:33:40 by rfabre            #+#    #+#             */
-/*   Updated: 2016/12/06 20:43:56 by rfabre           ###   ########.fr       */
+/*   Created: 2017/03/08 02:22:23 by rfabre            #+#    #+#             */
+/*   Updated: 2017/09/02 20:19:06 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
+void			ft_lstaddend(t_list **alst, t_list *new)
 {
-	unsigned int	i;
-	char			*temp;
+	t_list		*lst;
 
-	if (s != NULL && (*f) != NULL)
+	lst = *alst;
+	if (lst == NULL)
+		*alst = new;
+	else
 	{
-		if ((temp = (char*)malloc(sizeof(char) * (ft_strlen(s) + 1))) == NULL)
-			return (NULL);
-		i = -1;
-		while (s[++i])
-		{
-			temp[i] = f(i, s[i]);
-		}
-		temp[i] = '\0';
-		return (temp);
+		while (lst->next != NULL)
+			lst = lst->next;
+		lst->next = new;
 	}
-	return (NULL);
 }
