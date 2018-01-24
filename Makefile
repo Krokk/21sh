@@ -14,7 +14,7 @@ NAME = 21sh
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS_LIST = main.c line_movement.c
+SRCS_LIST = main.c line_movement.c line_editing.c
 
 SRCS_DIR = srcs/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
