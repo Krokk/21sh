@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 02:16:33 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 03:53:33 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 04:12:44 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void ft_go_start(t_edit *line, char *buf)
 		ft_left_arrow(buf, line);
 		i++;
 	}
-	tputs(tgetstr("ce", NULL), 1, ft_pointchar);
+	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 }
 
 void ft_cut(t_edit *line, char *buf)
@@ -96,6 +96,7 @@ void select_copy_cut(t_edit *line, char *buf)
 		line->select_mode = 0;
     ft_go_start(line, buf);
     ft_putstr(line->line);
+    line->cursor_pos = (ft_strlen(line->line) + 2);
 	}
 	else if (buf[0] == 21)
   {
