@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 02:21:24 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 20:44:12 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ typedef	struct		s_edit
 
 }									t_edit;
 
+
+
+struct winsize		ft_init(t_edit *line);
 void ft_isarrow(char *buf, t_edit *line);
 void ft_left_arrow(char *buf, t_edit *line);
 void ft_right_arrow(char *buf, t_edit *line);
@@ -46,7 +49,7 @@ void ft_homekey(char *buf, t_edit *line);
 void ft_endkey(char *buf, t_edit *line);
 void ft_delete(char *buf, t_edit *line);
 void ft_insert(char *buf, t_edit *line);
-void ft_move_it(int i, t_edit *line, char *buf, int check);
+void ft_move_it(t_edit *line, char *buf, int check);
 void ft_line_reset(t_edit *line);
 void ft_go_start(t_edit *line, char *buf);
 void ft_highlight(t_edit *line, char *buf);
@@ -54,5 +57,6 @@ void ft_go_start(t_edit *line, char *buf);
 void ft_cut(t_edit *line, char *buf);
 void select_copy_cut(t_edit *line, char *buf);
 void ft_prompt(void);
-struct winsize		ft_init(t_edit *line);
+void add_to_line(t_edit *line,char *buf);
+void handle_key(char *buf, t_edit *line);
 #endif
