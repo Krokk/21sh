@@ -1,4 +1,4 @@
 *.o
 objs
 21sh
-
+libft.a
