@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:34:44 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 20:53:12 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 23:25:04 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void			ft_line_reset(t_edit *line)
 	line->cursor_pos = 2;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
+	line->select_mode = 0;
 }
 
 

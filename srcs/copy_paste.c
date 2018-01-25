@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 02:16:33 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 21:01:30 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 23:19:24 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,32 +69,27 @@ void ft_go_start(t_edit *line, char *buf)
  {
    char *tmp;
    char *tmp2;
-   char *tmp3;
-   char *tmp4;
    int i;
-   (void)buf;
 
    i = 0;
    tmp = ft_strndup(line->line, line->cursor_pos - 2);
-   tmp2 = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
-   tmp3 = ft_freejoinstr(tmp, line->is_highlight);
-   tmp4 = ft_freejoinstr(tmp3, tmp2);
+   tmp2 = ft_freejoinstr(tmp, line->is_highlight);
    free (line->line);
-   line->line = ft_strdup(tmp4);
+   tmp = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
+   line->line = ft_freejoinstr(tmp2, tmp);
    ft_go_start(line, buf);
- 	ft_putstr(line->line);
+ 	 ft_putstr(line->line);
    line->max_size += ft_strlen(line->is_highlight);
    line->cursor_pos = ft_strlen(line->line) + 2;
-   while ((size_t)i < ft_strlen(tmp2))
+   while ((size_t)i < ft_strlen(tmp))
    {
- 	  buf[0] = 27;
- 	  buf[1] = 91;
  	  buf[2] = 68;
  	  ft_left_arrow(buf, line);
  	  i++;
    }
-   free(tmp4);
+   free(tmp);
 }
+
 
 void ft_cut(t_edit *line, char *buf)
 {

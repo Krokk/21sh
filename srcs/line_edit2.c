@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 20:09:29 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 20:52:36 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 22:51:58 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ void ft_insert(char *buf, t_edit *line)
 	tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
 	ft_putchar(buf[0]);
 	tmp3 = ft_freejoinstr(tmp, buf);
-	free (line->line);
+	free(line->line);
 	line->line = ft_freejoinstr(tmp3, tmp2);
+	free(tmp2);
 	tmp2 = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
 	ft_move_it(line, buf, 1);
 	while ((size_t)i < ft_strlen(tmp2))
@@ -34,6 +35,7 @@ void ft_insert(char *buf, t_edit *line)
 		ft_left_arrow(buf, line);
 		i++;
 	}
+	free(tmp2);
 }
 
 void add_to_line(t_edit *line,char *buf)
