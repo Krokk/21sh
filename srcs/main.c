@@ -6,44 +6,11 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:34:44 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 01:34:45 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 02:56:18 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
-
-int				ft_pointchar(int c)
-{
-	write(STDIN_FILENO, &c, 1);
-	return (0);
-}
-
-void			ft_prompt(void)
-{
-	ft_putstr(TURQUOISE);
-	ft_putstr("$>");
-	ft_putstr(DEFAULT);
-}
-
-struct winsize		ft_init(void)
-{
-	struct winsize sz;
-	struct termios attributes;
-	char			*name_term;
-
-	if ((name_term = getenv("TERM")) == NULL)
-		ft_putendl("<TERM> VARIABLE NOT FOUND");
-	if (tgetent(NULL, name_term) == ERR)
-		ft_putendl("VARIABLE NOT VALID");
-	ioctl(STDERR_FILENO, TIOCGWINSZ, &sz);
-	tcgetattr(0, &attributes);
-	attributes.c_lflag &= ~(ICANON);
-	attributes.c_lflag &= ~(ECHO);
-	attributes.c_cc[VMIN] = 1;
-	attributes.c_cc[VTIME] = 0;
-	tcsetattr(0, TCSADRAIN, &attributes);
-	return (sz);
-}
 
 
 void ft_wordleft(char *buf, t_edit *line)
@@ -100,34 +67,6 @@ void ft_wordright(char *buf, t_edit *line)
 	}
 }
 
-// static void ft_select_mode(t_edit *line)
-// {
-// 	int ret;
-// 	char buf[3];
-//
-// 	ft_putstr("select_mode");
-// 	ret = 0;
-// 	line->select_mode = 1;
-//
-// 	while ((ret = read(0, &buf, 3)) && (buf[0] != 11 && buf[1] != 0 && buf[2] != 0))
-// 	{
-// 		buf[ret] = '\0';
-// 		if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68)))
-// 			ft_isarrow(buf, line);
-// 		ft_bzero(buf, sizeof(buf));
-// 	}
-// 	ft_bzero(buf, sizeof(buf));
-// }
-
-static void select_on_off(t_edit *line)
-{
-	if (!line->select_mode)
-	{
-		line->select_mode = 1;
-		line->start_select = line->cursor_pos - 2;
-	}
-}
-
 void handle_key(char *buf, t_edit *line)
 {
 	if (!line->select_mode)
@@ -157,8 +96,8 @@ void handle_key(char *buf, t_edit *line)
 	}
 	if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68)))
 		ft_isarrow(buf, line);
-	else if (buf[0] == 11 && buf[1] == 0 && buf[2] == 0)
-		select_on_off(line);
+	else if ((buf[0] == 11) || (buf[0] == 21 ) || (buf[0] == 9))
+		select_copy_cut(line, buf);
 }
 
 int				main(int ac, char **av, char **envp)
@@ -169,16 +108,11 @@ int				main(int ac, char **av, char **envp)
 	(void)envp;
 	t_edit *line;
 	int ret;
-	// int tmp;
 
 	ret = 0;
 	line = ft_memalloc(sizeof(t_edit));
 	ft_line_reset(line);
-	line->sz = ft_init();
-	line->select_mode = 0;
-	line->start_select = 0;
-	line->end_select = 0;
-	line->is_highlight = ft_strnew(0);
+	line->sz = ft_init(line);
 	while (42)
 	{
 		ft_prompt();
@@ -195,11 +129,18 @@ int				main(int ac, char **av, char **envp)
 			ft_bzero(buf, sizeof(buf));
 		}
 		ft_putchar('\n');
+		ft_putchar('\n');
+		ft_putchar('\n');
+		ft_putstr("-------");
 		ft_putstr(line->line);
+		ft_putstr("-------");
 		ft_putchar('\n');
-		ft_putstr("--------------------");
 		ft_putchar('\n');
-		ft_putstr(line->is_highlight);
+		ft_putchar('\n');
+		ft_putchar('\n');
+		// ft_putstr("--------------------");
+		// ft_putchar('\n');
+		// ft_putstr(line->is_highlight);
 		// while (line->start_select < line->end_select)
 		// {
 		// 	ft_putchar(line->line[line->start_select]);

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 01:35:09 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 02:21:24 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,11 @@ void ft_delete(char *buf, t_edit *line);
 void ft_insert(char *buf, t_edit *line);
 void ft_move_it(int i, t_edit *line, char *buf, int check);
 void ft_line_reset(t_edit *line);
-
+void ft_go_start(t_edit *line, char *buf);
+void ft_highlight(t_edit *line, char *buf);
+void ft_go_start(t_edit *line, char *buf);
+void ft_cut(t_edit *line, char *buf);
+void select_copy_cut(t_edit *line, char *buf);
+void ft_prompt(void);
+struct winsize		ft_init(t_edit *line);
 #endif
