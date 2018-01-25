@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:34:44 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 02:56:18 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 04:41:54 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void handle_key(char *buf, t_edit *line)
 	}
 	if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68)))
 		ft_isarrow(buf, line);
-	else if ((buf[0] == 11) || (buf[0] == 21 ) || (buf[0] == 9))
+	else if ((buf[0] == 11) || (buf[0] == 21 ) || (buf[0] == 9) || buf[0] == 16)
 		select_copy_cut(line, buf);
 }
 

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 02:16:33 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 04:12:44 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/01/25 05:23:29 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,44 @@ void ft_go_start(t_edit *line, char *buf)
 	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 }
 
+/*
+ * FT_PASTE NOT FINISHED NEED FIX
+ */
+void ft_paste(t_edit *line, char *buf)
+{
+  char *tmp;
+  char *tmp2;
+  char *tmp3;
+  int i;
+  (void)buf;
+
+  i = 0;
+  tmp = ft_strndup(line->line, line->cursor_pos - 2);
+  tmp2 = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
+  ft_go_start(line, buf);
+  if (tmp)
+  {
+    ft_putstr(tmp);
+    tmp3 = ft_freejoinstr(tmp);
+  }
+  tmp = ft_strdup(line->is_highlight);
+  ft_putstr(line->is_highlight);
+  line->line = ft_freejoinstr(line->line, tmp);
+  if (tmp2)
+  {
+    ft_putstr(tmp2);
+    line->line = ft_freejoinstr(line->line, tmp2);
+  }
+  line->cursor_pos = (ft_strlen(line->line) + 2);
+
+}
+
 void ft_cut(t_edit *line, char *buf)
 {
 	int i;
 
 	char *tmp;
   char *tmp2;
-
 	i = 0;
 	tmp = ft_strndup(line->line, line->start_select);
 	ft_putstr(tmp);
@@ -91,14 +122,14 @@ void select_copy_cut(t_edit *line, char *buf)
 		line->select_mode = 1;
 		line->start_select = ((line->cursor_pos) - 2);
 	}
-	else if ((line->select_mode) && ((buf[0] == 11) || buf[0] == 9))
+	else if ((line->select_mode) && (buf[0] == 9))
 	{
 		line->select_mode = 0;
     ft_go_start(line, buf);
     ft_putstr(line->line);
     line->cursor_pos = (ft_strlen(line->line) + 2);
 	}
-	else if (buf[0] == 21)
+	else if ((line->select_mode) && (buf[0] == 21))
   {
     line->select_mode = 0;
     ft_go_start(line, buf);
@@ -111,5 +142,10 @@ void select_copy_cut(t_edit *line, char *buf)
     // ft_putstr("---");
     // ft_putnbr(line->max_size);
     ft_cut(line, buf);
+  }
+  else if (buf[0] == 16)
+  {
+    line->select_mode = 0;
+    ft_paste(line,buf);
   }
 }
