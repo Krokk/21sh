@@ -43,13 +43,6 @@ typedef struct			s_env
 	struct s_env		*next;
 }							t_env;
 
-typedef struct		s_data
-{
-	char			**path;
-	char			*home;
-	char			*oldpwd;
-}					t_data;
-
 struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
 void ft_isarrow(char *buf, t_edit *line);
@@ -69,4 +62,9 @@ void select_copy_cut(t_edit *line, char *buf);
 void ft_prompt(void);
 void add_to_line(t_edit *line,char *buf);
 void handle_key(char *buf, t_edit *line);
+
+void			ft_print_env(t_env *env);
+t_env			*add_env(char *var);
+void			ft_push_env(t_env **lst, char *var);
+
 #endif

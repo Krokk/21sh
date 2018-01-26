@@ -21,60 +21,21 @@ void			ft_line_reset(t_edit *line)
 	line->select_mode = 0;
 }
 
-void			ft_print_env(t_env *env)
-{
-	while (env)
-	{
-		ft_putendl(env->var);
-		env = env->next;
-	}
-}
-
-t_env			*add_env(char *var)
-{
-	t_env		*tmp;
-
-	if (!(tmp = (t_env *)malloc(sizeof(t_env))))
-		return (NULL);
-	tmp->next = NULL;
-	if (!var)
-		tmp->var = NULL;
-	else
-		tmp->var = ft_strdup(var);
-	return (tmp);
-}
-
-void			ft_push_env(t_env **lst, char *var)
-{
-	t_env		*tmp;
-
-	tmp = *lst;
-	if (!tmp)
-		*lst = add_env(var);
-	else
-	{
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = add_env(var);
-	}
-}
-
 int				main(int ac, char **av, char **envp)
 {
-	char buf[3];
+
 	(void)ac;
 	(void)av;
-	// (void)envp;
+
+	char buf[3];
 	t_edit *line;
 	int ret;
 	int i;
 	t_env		*env;
-	t_data	*pvar;
 
 	i = 0;
 	ret = 0;
 	env = NULL;
-	ft_memset(&pvar, 0, sizeof(pvar));
 	line = ft_memalloc(sizeof(t_edit));
 	ft_line_reset(line);
 	line->sz = ft_init(line);
