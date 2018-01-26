@@ -24,24 +24,34 @@
 # include <curses.h>
 # include <term.h>
 
-int					ft_pointchar(int c);
-
 typedef	struct		s_edit
 {
 	struct winsize 	sz;
-	int             cursor_pos;
-	int							max_size;
-	char 						*line;
-	int 						select_mode;
-	int           	start_select;
-	int           	end_select;
-	char 						*is_highlight;
+	int					cursor_pos;
+	int					max_size;
+	char 					*line;
+	int 					select_mode;
+	int           		start_select;
+	int	           	end_select;
+	char 					*is_highlight;
 
-}									t_edit;
+}							t_edit;
 
+typedef struct			s_env
+{
+	char					*var;
+	struct s_env		*next;
+}							t_env;
 
+typedef struct		s_data
+{
+	char			**path;
+	char			*home;
+	char			*oldpwd;
+}					t_data;
 
 struct winsize		ft_init(t_edit *line);
+int					ft_pointchar(int c);
 void ft_isarrow(char *buf, t_edit *line);
 void ft_left_arrow(char *buf, t_edit *line);
 void ft_right_arrow(char *buf, t_edit *line);

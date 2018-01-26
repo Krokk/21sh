@@ -128,14 +128,6 @@ void select_copy_cut(t_edit *line, char *buf)
   {
     line->select_mode = 0;
     ft_go_start(line, buf);
-    // ft_putchar('\n');
-    // ft_putchar('\n');
-    // ft_putstr("---");
-    // ft_putnbr(line->cursor_pos);
-    // ft_putchar('\n');
-    // ft_putchar('\n');
-    // ft_putstr("---");
-    // ft_putnbr(line->max_size);
     ft_cut(line, buf);
   }
   else if (buf[0] == 16)
