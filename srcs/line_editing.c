@@ -138,7 +138,7 @@ void handle_key(char *buf, t_edit *line)
 		else if (buf[0] == 27 && buf[1] == 91 && buf[2] == 70)
 			ft_endkey(buf, line);
 	}
-	if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68)))
+	if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68 || buf[2] == 65 || buf[2] == 66))) //65 up 66 down
 		ft_isarrow(buf, line);
 	else if ((buf[0] == 11) || (buf[0] == 21 ) || (buf[0] == 9) || buf[0] == 16)
 		select_copy_cut(line, buf);

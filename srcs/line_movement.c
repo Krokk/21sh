@@ -43,7 +43,11 @@ void ft_right_arrow(char *buf, t_edit *line)
 
 void ft_isarrow(char *buf, t_edit *line)
 {
-	if (buf[2] == 68)
+	if (buf[2] == 65)
+		ft_arrow_up(line);
+	else if (buf[2] == 66)
+		ft_arrow_down(line);
+	else if (buf[2] == 68)
 		ft_left_arrow(buf, line);
 	else
 		ft_right_arrow(buf, line);

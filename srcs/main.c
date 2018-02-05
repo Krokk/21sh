@@ -14,11 +14,12 @@
 
 void			ft_line_reset(t_edit *line)
 {
-	free (line->line);
+	free (line->line); //bug history segfault
 	line->cursor_pos = 2;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
 	line->select_mode = 0;
+	line->curr = NULL;
 }
 
 int				main(int ac, char **av, char **envp)
@@ -32,11 +33,11 @@ int				main(int ac, char **av, char **envp)
 	int ret;
 	int i;
 	t_env		*env;
-
 	i = 0;
 	ret = 0;
 	env = NULL;
 	line = ft_memalloc(sizeof(t_edit));
+	line->hstr = NULL;
 	ft_line_reset(line);
 	line->sz = ft_init(line);
 	while (envp[i])
@@ -56,14 +57,15 @@ int				main(int ac, char **av, char **envp)
 			handle_key(buf, line);
 			ft_bzero(buf, sizeof(buf));
 		}
+		ft_add_history(line); //add line to history
 		ft_putchar('\n');
 		ft_putchar('\n');
 		ft_putchar('\n');
 		ft_putstr("-------");
 		ft_putstr(line->line);
 		ft_putstr("-------");
-		ft_putchar('\n');
-		ft_putchar('\n');
+		if (line->curr)
+			printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
 		ft_putchar('\n');
 		ft_putchar('\n');
 		// ft_putstr("--------------------");

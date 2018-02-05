@@ -34,8 +34,20 @@ typedef	struct		s_edit
 	int           		start_select;
 	int	           	end_select;
 	char 					*is_highlight;
-
+	struct s_hstr *hstr; //pointer to the last element added
+	struct s_hstr *curr; //pointer to current element of the history
 }							t_edit;
+
+typedef struct 	s_hstr
+{
+	char 					*cmd;
+	struct s_hstr *up;
+	struct s_hstr *down;
+} 							t_hstr;
+
+void ft_add_history(t_edit *line);
+void ft_arrow_up(t_edit *line);
+void ft_arrow_down(t_edit *line);
 
 typedef struct			s_env
 {
