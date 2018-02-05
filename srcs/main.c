@@ -14,7 +14,7 @@
 
 void			ft_line_reset(t_edit *line)
 {
-	free (line->line); //bug history segfault
+	free (line->line);
 	line->cursor_pos = 2;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));

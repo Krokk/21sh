@@ -17,13 +17,13 @@ void ft_arrow_up(t_edit *line)
   int cnt;
 
   cnt = 0;
-  if (!line->hstr)
+
+  if (!line->hstr || line->cursor_pos < line->max_size)
     return ;
-  if (line->curr == NULL)
+  else if (line->curr == NULL)
     line->curr = line->hstr;
   else if (line->curr->up)
     line->curr = line->curr->up;
-// if (ft_strcmp(line->line, line->curr->cmd) == 0)
   while (cnt < line->max_size - 2)
   {
     ft_putstr("\b \b");
@@ -58,12 +58,7 @@ void ft_arrow_down(t_edit *line)
       line->cursor_pos = line->max_size;
     }
     else
-    {
-      line->line = ft_memalloc(sizeof(char));
-      line->cursor_pos = 2;
-      line->max_size = 2;
-      line->curr = NULL;
-    }
+      ft_line_reset(line);
   }
 }
 
