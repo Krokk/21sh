@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 20:16:41 by rfabre            #+#    #+#             */
-/*   Updated: 2017/09/25 14:52:24 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/02/06 15:59:27 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ char				*ft_strcpy(char *dst, const char *src);
 char				*ft_strncpy(char *dst, const char *src, size_t len);
 int					ft_isascii(int c);
 int					ft_isprint(int c);
+char				*ft_strjoinnfree(char *s1, char *s2, size_t len, char b12);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
 void				ft_bzero(void *s, size_t n);

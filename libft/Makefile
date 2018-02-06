@@ -6,7 +6,7 @@
 #    By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/28 17:18:59 by rfabre            #+#    #+#              #
-#    Updated: 2017/08/28 21:29:17 by rfabre           ###   ########.fr        #
+#    Updated: 2018/02/06 15:58:55 by rfabre           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,6 +78,7 @@ SRC = ft_bzero.c\
 	  ft_putnstr.c\
 	  ft_freejoinstr.c\
 	  ft_freearraystr.c\
+		ft_strjoinnfree.c
 
 OBJDIR = objs
 HEADERFLAGS = -I libft.h
