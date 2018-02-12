@@ -55,6 +55,19 @@ typedef struct			s_env
 	struct s_env		*next;
 }							t_env;
 
+
+
+
+typedef struct			s_lexit
+{
+	char					*input;
+	int					lex;			//0 = input / 1 = operator
+	struct s_lexit		*next;
+}							t_lexit;
+
+
+
+
 struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
 void ft_isarrow(char *buf, t_edit *line);

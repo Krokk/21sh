@@ -22,6 +22,68 @@ void			ft_line_reset(t_edit *line)
 	line->curr = NULL;
 }
 
+t_lexit 			*ft_add_token(t_edit *line, int i)
+{
+	t_lexit *tmp;
+
+	if (!(tmp = ft_memalloc(sizeof(t_edit))))
+		return (NULL);
+	tmp->next = NULL;
+	if (!line->line)
+		tmp->input = NULL;
+	else
+	{
+		tmp->input = ft_strndup(line->line, i);
+		tmp->lex = 0;
+	}
+	return (tmp);
+}
+
+void 				ft_tokenize_it(t_edit *line, t_lexit **lexdat)
+{
+	int i;
+	int j;
+	t_lexit *tmp;
+
+	i = 0;
+	j = 0;
+	tmp = *lexdat;
+	while (line->line[i])
+	{
+		if (line->line[i] == ';' || line->line[i] == '|' || line->line[i] == '>' || line->line[i] == '<' || line->line[i] == '\0')
+		{
+			if (!tmp)
+			{
+				*lexdat = ft_add_token(line, i);
+				// ft_putstr((*lexdat)->input);
+				ft_putnbr(j);
+				j++;
+			}
+			else
+			{
+				while (tmp->next)
+					tmp = tmp->next;
+				ft_putstr("cocou");
+				tmp->next = ft_add_token(line, i);
+			}
+		}
+		i++;
+	}
+}
+
+void ft_print_lexdat(t_lexit *lexdat)
+{
+	// while (lexdat)
+	// {
+		ft_putstr(lexdat->input);
+		// ft_putchar('\n');
+		// ft_putchar('\n');
+		// ft_putchar('\n');
+		// ft_putchar('\n');
+		// lexdat = lexdat->next;
+	// }
+}
+
 int				main(int ac, char **av, char **envp)
 {
 
@@ -30,12 +92,14 @@ int				main(int ac, char **av, char **envp)
 
 	char buf[3];
 	t_edit *line;
+	t_lexit *lexdat;
 	int ret;
 	int i;
 	t_env		*env;
 	i = 0;
 	ret = 0;
 	env = NULL;
+	lexdat = NULL;
 	line = ft_memalloc(sizeof(t_edit));
 	line->hstr = NULL;
 	ft_line_reset(line);
@@ -57,6 +121,7 @@ int				main(int ac, char **av, char **envp)
 			handle_key(buf, line);
 			ft_bzero(buf, sizeof(buf));
 		}
+		ft_tokenize_it(line, &lexdat);
 		ft_add_history(line); //add line to history
 		ft_putchar('\n');
 		ft_putchar('\n');
@@ -68,6 +133,7 @@ int				main(int ac, char **av, char **envp)
 			printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
 		ft_putchar('\n');
 		ft_putchar('\n');
+		ft_print_lexdat(lexdat);
 		// ft_putstr("--------------------");
 		// ft_putchar('\n');
 		// ft_putstr(line->is_highlight);
