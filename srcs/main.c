@@ -12,6 +12,14 @@
 
 #include "../includes/sh.h"
 
+// void 			ft_errors(int code, char *cmd, char *arg)
+// {
+// 	if (code == 1)
+// 	{
+//
+// 	}
+// }
+//
 void			ft_line_reset(t_edit *line)
 {
 	free (line->line);
@@ -22,6 +30,145 @@ void			ft_line_reset(t_edit *line)
 	line->curr = NULL;
 }
 
+int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
+{
+	if (str[*i] == ';')
+		return (SEMICOLON);
+	else if (str[*i] == '|')
+	{
+		if (str[*i+1] == '|')
+		{
+			*i += 1;
+			return (DOUBLEPIPE);
+		}
+		return (PIPE);
+	}
+	else if (str[*i] == '>')
+	{
+		if (str[*i+1] == '>')
+		{
+			*i += 1;
+			return(DOUBLECHEVRONRIGHT);
+		}
+		return (CHEVRONRIGHT);
+	}
+	else if (str[*i] == '<')
+	{
+		if (str[*i+1] == '<')
+		{
+			*i += 1;
+			return(DOUBLECHEVRONLEFT);
+		}
+		return (CHEVRONLEFT);
+	}
+	else if (str[*i] == '&')
+	{
+		if (str[*i+1] == '&')
+		{
+			*i += 1;
+			return (DOUBLESPER);
+		}
+		return (ESPER);
+	}
+	else
+		return (-1);
+}
+
+t_lexit 			*ft_add_token(t_edit *line, int *i, int *j)
+{
+	t_lexit *tmp;
+
+	if (!(tmp = ft_memalloc(sizeof(t_edit))))
+		return (NULL);
+	tmp->next = NULL;
+	if (!line->line)
+		tmp->input = NULL;
+	else
+	{
+		tmp->input = ft_strsub(line->line, *j, *i - *j);
+		tmp->lexem = ft_what_op_value_to_know_how_to_execute(line->line, i);
+	}
+	return (tmp);
+}
+
+
+
+void 				ft_tokenize_it(t_edit *line, t_lexit **lexdat)
+{
+	int i;
+	int j;
+	t_lexit *tmp;
+
+	i = 0;
+	j = 0;
+	tmp = *lexdat;
+	while (line->line[i])
+	{
+		if (ft_strchr(OPERATOR, line->line[i]))
+		{
+			if (!tmp)
+			{
+				*lexdat = ft_add_token(line, &i, &j);
+				tmp = *lexdat;
+			}
+			else
+			{
+				while (tmp->next)
+					tmp = tmp->next;
+				tmp->next = ft_add_token(line, &i, &j);
+			}
+			j = i + 1;
+		}
+		i++;
+		if (line->line[i] == '\0')
+		{
+			if (!tmp)
+			{
+				*lexdat = ft_add_token(line, &i, &j);
+				tmp = *lexdat;
+			}
+			else
+			{
+				while (tmp->next)
+					tmp = tmp->next;
+				tmp->next = ft_add_token(line, &i, &j);
+			}
+		}
+		while (ft_isspace(line->line[i]))
+			i++;
+	}
+}
+
+void ft_print_lexdat(t_lexit *lexdat)
+{
+	t_lexit *tmp;
+
+	tmp = lexdat;
+	while (tmp)
+	{
+		ft_putstr(tmp->input);
+		ft_putchar('\n');
+		ft_putstr("LEXEM TO COME HAS VALUE : ");
+		ft_putnbr(tmp->lexem);
+		ft_putchar('\n');
+		tmp = tmp->next;
+	}
+}
+
+void 				ft_free_lexdat(t_lexit *lexdat)
+{
+	t_lexit *tmp;
+
+	tmp = lexdat;
+	while (lexdat)
+	{
+		tmp = lexdat;
+		lexdat = lexdat->next;
+		ft_strdel(&tmp->input);
+		free(tmp);
+	}
+}
+
 int				main(int ac, char **av, char **envp)
 {
 
@@ -30,12 +177,14 @@ int				main(int ac, char **av, char **envp)
 
 	char buf[3];
 	t_edit *line;
+	t_lexit *lexdat;
 	int ret;
 	int i;
 	t_env		*env;
 	i = 0;
 	ret = 0;
 	env = NULL;
+	lexdat = NULL;
 	line = ft_memalloc(sizeof(t_edit));
 	line->hstr = NULL;
 	ft_line_reset(line);
@@ -57,6 +206,8 @@ int				main(int ac, char **av, char **envp)
 			handle_key(buf, line);
 			ft_bzero(buf, sizeof(buf));
 		}
+		if (ft_parser(line))
+			ft_tokenize_it(line, &lexdat);
 		ft_add_history(line); //add line to history
 		ft_putchar('\n');
 		ft_putchar('\n');
@@ -68,6 +219,9 @@ int				main(int ac, char **av, char **envp)
 			printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
 		ft_putchar('\n');
 		ft_putchar('\n');
+		ft_print_lexdat(lexdat);
+		ft_free_lexdat(lexdat);
+		lexdat = NULL;
 		// ft_putstr("--------------------");
 		// ft_putchar('\n');
 		// ft_putstr(line->is_highlight);

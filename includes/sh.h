@@ -14,6 +14,7 @@
 # define SH_H
 
 # define BUILTIN "exit echo cd env setenv unsetenv"
+# define OPERATOR ">&;|<"
 
 # include "../libft/libft.h"
 # include <sys/wait.h>
@@ -23,6 +24,19 @@
 # include <sys/ioctl.h>
 # include <curses.h>
 # include <term.h>
+
+enum
+{
+	SEMICOLON,
+	PIPE,
+	DOUBLEPIPE,
+	CHEVRONLEFT,
+	CHEVRONRIGHT,
+	DOUBLECHEVRONLEFT,
+	DOUBLECHEVRONRIGHT,
+	ESPER,
+	DOUBLESPER
+};
 
 typedef	struct		s_edit
 {
@@ -54,6 +68,19 @@ typedef struct			s_env
 	char					*var;
 	struct s_env		*next;
 }							t_env;
+
+
+
+
+typedef struct			s_lexit
+{
+	char					*input;
+	int					lexem;			//0 = input / 1 = operator
+	struct s_lexit		*next;
+}							t_lexit;
+
+
+
 
 struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
