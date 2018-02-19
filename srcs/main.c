@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:34:44 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/26 08:07:25 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/02/19 19:22:22 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ int				main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 
-	char buf[3];
+	int buf;
 	t_edit *line;
 	t_lexit *lexdat;
 	int ret;
@@ -194,33 +194,26 @@ int				main(int ac, char **av, char **envp)
 	while (42)
 	{
 		ft_prompt();
-		while ((ret = read(0, &buf, 3)) && ft_strcmp(buf, "\n"))
+		while ((ret = read(0, &buf, sizeof(int))) && buf != 10)
 		{
-			// ft_putnbr(buf[0]);
-			// ft_putchar('\n');
-			// ft_putnbr(buf[1]);
-			// ft_putchar('\n');
-			// ft_putnbr(buf[2]);
-			// ft_putchar('\n');
-			buf[ret] = '\0';
 			handle_key(buf, line);
-			ft_bzero(buf, sizeof(buf));
+			buf = 0;
 		}
-		if (ft_parser(line))
-			ft_tokenize_it(line, &lexdat);
+		// if (ft_parser(line))
+		ft_tokenize_it(line, &lexdat);
 		ft_add_history(line); //add line to history
 		ft_putchar('\n');
-		ft_putchar('\n');
-		ft_putchar('\n');
+		// ft_putchar('\n');
+		// ft_putchar('\n');
 		ft_putstr("-------");
 		ft_putstr(line->line);
 		ft_putstr("-------");
-		if (line->curr)
-			printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
+		// if (line->curr)
+		// 	printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
 		ft_putchar('\n');
-		ft_putchar('\n');
-		ft_print_lexdat(lexdat);
-		ft_free_lexdat(lexdat);
+		// ft_putchar('\n');
+		// ft_print_lexdat(lexdat);
+		// ft_free_lexdat(lexdat);
 		lexdat = NULL;
 		// ft_putstr("--------------------");
 		// ft_putchar('\n');

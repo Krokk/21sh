@@ -6,13 +6,13 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:34:48 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/25 20:53:14 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/02/19 19:06:48 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-void ft_wordleft(char *buf, t_edit *line)
+void ft_wordleft(t_edit *line)
 {
 	int i;
 
@@ -22,24 +22,18 @@ void ft_wordleft(char *buf, t_edit *line)
 		if (line->line[i] == ' ')
 			while(line->line[i] == ' ')
 			{
-				buf[0] = 27;
-				buf[1] = 91;
-				buf[2] = 68;
 				i--;
-				ft_left_arrow(buf, line);
+				ft_left_arrow(line);
 			}
 		while (line->line[i] != ' ')
 		{
-			buf[0] = 27;
-			buf[1] = 91;
-			buf[2] = 68;
 			i--;
-			ft_left_arrow(buf, line);
+			ft_left_arrow(line);
 		}
 	}
 }
 
-void ft_wordright(char *buf, t_edit *line)
+void ft_wordright(t_edit *line)
 {
 	int i;
 
@@ -49,24 +43,18 @@ void ft_wordright(char *buf, t_edit *line)
 		if (line->line[i] == ' ')
 			while(line->line[i] == ' ')
 			{
-				buf[0] = 27;
-				buf[1] = 91;
-				buf[2] = 67;
 				i++;
-				ft_right_arrow(buf, line);
+				ft_right_arrow(line);
 			}
 		while (line->line[i] != ' ')
 		{
-			buf[0] = 27;
-			buf[1] = 91;
-			buf[2] = 67;
 			i++;
-			ft_right_arrow(buf, line);
+			ft_right_arrow(line);
 		}
 	}
 }
 
-void ft_delete(char *buf, t_edit *line)
+void ft_delete(t_edit *line)
 {
 	char *tmp;
 	char *tmp2;
@@ -78,7 +66,7 @@ void ft_delete(char *buf, t_edit *line)
 		tmp = ft_strndup(line->line, ft_strlen(line->line) - 1);
 		free (line->line);
 		line->line = tmp;
-		ft_move_it(line, buf, 0);
+		ft_move_it(line, 0);
 	}
 	else if ((line->cursor_pos != line->max_size) && (line->cursor_pos > 2))
 	{
@@ -87,25 +75,23 @@ void ft_delete(char *buf, t_edit *line)
 				(ft_strlen(line->line) - line->cursor_pos) + 3);
 		free (line->line);
 		line->line = ft_freejoinstr(tmp, tmp2);
-		ft_move_it(line, buf, 0);
+		ft_move_it(line, 0);
 		while ((size_t)i < ft_strlen(tmp2))
 		{
-			buf[2] = 68;
-			ft_left_arrow(buf, line);
+			ft_left_arrow(line);
 			i++;
 		}
 	}
 }
 
-void ft_move_it(t_edit *line, char *buf, int check)
+void ft_move_it(t_edit *line, int check)
 {
 	int i;
 
 	i = 0;
 	while (i < line->max_size)
 	{
-		buf[2] = 68;
-		ft_left_arrow(buf, line);
+		ft_left_arrow(line);
 		i++;
 	}
 	if (check == 1)
@@ -121,25 +107,38 @@ void ft_move_it(t_edit *line, char *buf, int check)
 }
 
 
-void handle_key(char *buf, t_edit *line)
+void handle_key(int buf, t_edit *line)
 {
+	if (buf == PRESS_LEFT)
+		ft_left_arrow(line);
+	else if (buf == PRESS_RIGHT)
+		ft_right_arrow(line);
+	else if (buf == PRESS_UP)
+		ft_arrow_up(line);
+	else if (buf == PRESS_DOWN)
+		ft_arrow_down(line);
 	if (!line->select_mode)
 	{
-		if (ft_isprint(buf[0]))
+		if (ft_isprint(buf))
 			add_to_line(line, buf);
-		else if (buf[0] == 127)
-			ft_delete(buf, line);
-		else if (buf[0] == 5 && buf[1] == 0 && buf[2] == 0)
-			ft_wordleft(buf, line);
-		else if (buf[0] == 18 && buf[1] == 0 && buf[2] == 0)
-			ft_wordright(buf, line);
-		else if (buf[0] == 27 && buf[1] == 91 && buf[2] == 72)
-			ft_homekey(buf, line);
-		else if (buf[0] == 27 && buf[1] == 91 && buf[2] == 70)
-			ft_endkey(buf, line);
+		else if (buf == PRESS_BACKSPACE)
+			ft_delete(line);
+		else if (buf == PRESS_SHIFT_LEFT)
+			ft_wordleft(line);
+		else if (buf == PRESS_SHIFT_RIGHT)
+			ft_wordright(line);
+		else if (buf == PRESS_HOME)
+			ft_homekey(line);
+		else if (buf == PRESS_END)
+			ft_endkey(line);
 	}
-	if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68 || buf[2] == 65 || buf[2] == 66))) //65 up 66 down
-		ft_isarrow(buf, line);
-	else if ((buf[0] == 11) || (buf[0] == 21 ) || (buf[0] == 9) || buf[0] == 16)
+	else if (line->select_mode)
+	{
+		line->end_select = line->cursor_pos - 2;
+		ft_go_start(line);
+		ft_highlight(line);
+	}
+	if (buf == PRESS_ALT_C || buf == PRESS_ALT_V || buf == PRESS_ALT_X
+	|| buf == PRESS_ALT_K)
 		select_copy_cut(line, buf);
 }
