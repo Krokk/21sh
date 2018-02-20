@@ -1,25 +1,50 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/25 01:34:44 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/19 19:22:22 by tchapka          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/sh.h"
 
-// void 			ft_errors(int code, char *cmd, char *arg)
-// {
-// 	if (code == 1)
-// 	{
-//
-// 	}
-// }
-//
+int 			ft_errors(int code, char *cmd, char *arg)
+{
+	if (!cmd)
+		(void)cmd;
+	if (!arg)
+		(void)arg;
+	if (code == 1)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: parse error near `<'", 2);
+		return (0);
+	}
+	if (code == 2)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: parse error near `>'", 2);
+		return (0);
+	}
+	if (code == 3)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: parse error near `;;'", 2);
+		return (0);
+	}
+	if (code == 4)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: parse error near `newline'", 2);
+		return (0);
+	}
+	if (code == 5)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: parse error near `;|'", 2);
+		return (0);
+	}
+	if (code == 6)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: parse error near `;'", 2);
+		return (0);
+	}
+	return (1);
+}
+
 void			ft_line_reset(t_edit *line)
 {
 	free (line->line);
@@ -74,6 +99,16 @@ int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
 		return (-1);
 }
 
+int 				ft_isstrprint(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[++i])
+		return (ft_isprint(str[i]));
+	return (0);
+}
+
 t_lexit 			*ft_add_token(t_edit *line, int *i, int *j)
 {
 	t_lexit *tmp;
@@ -81,13 +116,10 @@ t_lexit 			*ft_add_token(t_edit *line, int *i, int *j)
 	if (!(tmp = ft_memalloc(sizeof(t_edit))))
 		return (NULL);
 	tmp->next = NULL;
-	if (!line->line)
+	tmp->input = ft_strsub(line->line, *j, *i - *j);
+	if (!ft_isstrprint(tmp->input))
 		tmp->input = NULL;
-	else
-	{
-		tmp->input = ft_strsub(line->line, *j, *i - *j);
-		tmp->lexem = ft_what_op_value_to_know_how_to_execute(line->line, i);
-	}
+	tmp->lexem = ft_what_op_value_to_know_how_to_execute(line->line, i);
 	return (tmp);
 }
 
@@ -146,8 +178,11 @@ void ft_print_lexdat(t_lexit *lexdat)
 	tmp = lexdat;
 	while (tmp)
 	{
-		ft_putstr(tmp->input);
-		ft_putchar('\n');
+		if (tmp->input)
+		{
+			ft_putstr(tmp->input);
+			ft_putchar('\n');
+		}
 		ft_putstr("LEXEM TO COME HAS VALUE : ");
 		ft_putnbr(tmp->lexem);
 		ft_putchar('\n');
@@ -167,6 +202,59 @@ void 				ft_free_lexdat(t_lexit *lexdat)
 		ft_strdel(&tmp->input);
 		free(tmp);
 	}
+}
+
+int 				ft_pre_parser(t_edit *line)
+{
+	int i;
+
+	i = 0;
+	while (line->line[i])
+	{
+		if (ft_strchr(OPERATOR, line->line[i]))
+		{
+			if (line->line[i] == '>')
+			{
+				if (line->line[i+1] == '<')
+					return (1);
+				if (line->line[i+1] == ';')
+					return (6);
+			}
+			if (line->line[i] == '<')
+			{
+				if (line->line[i+1] == '>')
+					return (2);
+				if (line->line[i+1] == ';')
+					return (6);
+			}
+			if (line->line[i] == ';')
+			{
+				if (line->line[i+1] == ';')
+					return (3);
+				if (line->line[i+1] == '|')
+					return (5);
+			}
+		}
+		i++;
+	}
+	return (0);
+}
+
+int 				ft_parser(t_lexit *lexdat)
+{
+	t_lexit *tmp;
+
+	tmp = lexdat;
+	while (tmp)
+	{
+		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
+		{
+			if (!tmp->next->input)
+				return (4);
+		}
+		tmp = tmp->next;
+	}
+	return (0);
 }
 
 int				main(int ac, char **av, char **envp)
@@ -199,21 +287,27 @@ int				main(int ac, char **av, char **envp)
 			handle_key(buf, line);
 			buf = 0;
 		}
-		// if (ft_parser(line))
-		ft_tokenize_it(line, &lexdat);
+		if (ft_errors(ft_pre_parser(line), NULL, NULL))
+		{
+			ft_tokenize_it(line, &lexdat);
+			if (ft_errors(ft_parser(lexdat), NULL, NULL))
+			{
+				ft_putchar('\n');
+				ft_putchar('\n');
+				ft_print_lexdat(lexdat);
+			}
+
+		}
 		ft_add_history(line); //add line to history
 		ft_putchar('\n');
-		// ft_putchar('\n');
-		// ft_putchar('\n');
 		ft_putstr("-------");
 		ft_putstr(line->line);
 		ft_putstr("-------");
-		// if (line->curr)
-		// 	printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
+		if (line->curr)
+			printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
 		ft_putchar('\n');
-		// ft_putchar('\n');
-		// ft_print_lexdat(lexdat);
-		// ft_free_lexdat(lexdat);
+		ft_putchar('\n');
+		ft_free_lexdat(lexdat);
 		lexdat = NULL;
 		// ft_putstr("--------------------");
 		// ft_putchar('\n');
@@ -229,7 +323,6 @@ int				main(int ac, char **av, char **envp)
 			ft_print_env(env);
 		if (ft_strequ(line->line, "exit"))
 			exit(0);
-
 		ft_line_reset(line);
 	}
 	return 0;
