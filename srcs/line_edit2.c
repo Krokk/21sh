@@ -17,14 +17,16 @@ void ft_insert(int buf, t_edit *line)
 	char *tmp;
 	char *tmp2;
 	char *tmp3;
-	char buf2;
+	char buf2[2];
 	int i;
 
-	buf2 = (char)buf;
+	buf2[0] = (char)buf;
+	buf2[1] = '\0';
 	i = 0;
 	tmp = ft_strndup(line->line, line->cursor_pos - 3);
 	tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
-	tmp3 = ft_freejoinstr(tmp, &buf2);
+	ft_putchar(buf);
+	tmp3 = ft_freejoinstr(tmp, buf2);
 	free(line->line);
 	line->line = ft_freejoinstr(tmp3, tmp2);
 	free(tmp2);
@@ -40,16 +42,17 @@ void ft_insert(int buf, t_edit *line)
 
 void add_to_line(t_edit *line, int buf)
 {
-	char buf2;
+	char buf2[2];
 
-	buf2 = (char)buf;
+	buf2[0] = (char)buf;
+	buf2[1] = '\0';
 	line->max_size++;
 	line->cursor_pos++;
 	if (line->cursor_pos == line->max_size)
 	{
-	line->line = ft_freejoinstr(line->line, &buf2);
+	line->line = ft_freejoinstr(line->line, buf2);
 	ft_putchar(buf);
 	}
-	// else if (line->cursor_pos != line->max_size)
-	// 	ft_insert(buf, line);
+	else if (line->cursor_pos != line->max_size)
+		ft_insert(buf, line);
 }

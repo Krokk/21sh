@@ -94,8 +94,6 @@ void ft_move_it(t_edit *line, int check)
 		ft_left_arrow(line);
 		i++;
 	}
-	if (check == 1)
-		i = 0;
 	if (check == 0)
 	{
 		line->cursor_pos--;

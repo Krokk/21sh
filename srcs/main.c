@@ -284,6 +284,7 @@ int				main(int ac, char **av, char **envp)
 		ft_prompt();
 		while ((ret = read(0, &buf, sizeof(int))) && buf != 10)
 		{
+			// ft_putnbr(buf);
 			handle_key(buf, line);
 			buf = 0;
 		}
