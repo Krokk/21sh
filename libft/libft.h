@@ -45,7 +45,7 @@
 # define PRESS_ALT_C			42947
 # define PRESS_ALT_V			10127586
 # define PRESS_ALT_X 			8948194
-# define PRESS_ALT_K			10101010 // valeur non juste
+# define PRESS_ALT_K			39627
 
 
 typedef	struct		s_list

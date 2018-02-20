@@ -104,6 +104,45 @@ void ft_move_it(t_edit *line, int check)
 	line->cursor_pos = ft_strlen(line->line) + 2;
 }
 
+static void			print_cpy(int buf)
+{
+	char		str[5];
+	char		tmp[2];
+	int			i = 0;
+
+	str[0] = buf % 128;
+	str[1] = buf >> 8;
+	str[2] = buf >> 16;
+	str[3] = buf >> 24;
+	str[4] = '\0';
+	while (str[i])
+	{
+		tmp[0] = str[i];
+		tmp[1] = '\0';
+		ft_putstr(tmp);
+		i++;
+	}
+}
+
+static int				check_copy(int buf)
+{
+	char	check[4];
+	int		i;
+
+	i = 0;
+	check[0] = buf % 128;
+	check[1] = buf >> 8;
+	check[2] = buf >> 16;
+	check[3] = buf >> 24;
+	while (i < 4)
+	{
+		if ((int)check[i] > 126 || (int)check[i] < 32)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 
 void handle_key(int buf, t_edit *line)
 {
@@ -115,6 +154,8 @@ void handle_key(int buf, t_edit *line)
 		ft_arrow_up(line);
 	else if (buf == PRESS_DOWN)
 		ft_arrow_down(line);
+	else if (check_copy(buf))
+		print_cpy(buf);
 	if (!line->select_mode)
 	{
 		if (ft_isprint(buf))

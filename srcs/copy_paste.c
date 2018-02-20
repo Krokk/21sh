@@ -111,7 +111,7 @@ void select_copy_cut(t_edit *line, int buf)
 		line->select_mode = 1;
 		line->start_select = ((line->cursor_pos) - 2);
 	}
-	else if (line->select_mode && buf == PRESS_ALT_K)
+	else if ((line->select_mode) && ((buf == PRESS_ALT_K)  || (buf == PRESS_ALT_C)))
 	{
 		line->select_mode = 0;
     ft_go_start(line);
@@ -124,7 +124,7 @@ void select_copy_cut(t_edit *line, int buf)
     ft_go_start(line);
     ft_cut(line);
   }
-  else if (buf == PRESS_ALT_C)
+  else if (buf == PRESS_ALT_V)
   {
     line->select_mode = 0;
     ft_paste(line);
