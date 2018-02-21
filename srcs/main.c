@@ -47,7 +47,8 @@ int 			ft_errors(int code, char *cmd, char *arg)
 
 void			ft_line_reset(t_edit *line)
 {
-	free (line->line);
+	ft_strdel(&line->line);
+	free(line->line);
 	line->cursor_pos = 2;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
@@ -257,6 +258,28 @@ int 				ft_parser(t_lexit *lexdat)
 	return (0);
 }
 
+
+// static void try_redirect(t_edit *line)
+// {
+// 	char **commands;
+// 	pid_t pid;
+//
+// 	commands = ft_strsplit(line->line, ' ');
+//
+// 	if ((pid = fork()) == -1)
+// 		ft_putstr("error forking");
+// 	if (!pid)
+// 	{
+//
+// 		execve("/bin/ls", commands, NULL);
+// 	}
+// 	else
+// 	{
+// 		waitpid(pid, NULL, 0);
+// 	}
+// 	ft_freearraystr(commands);
+// }
+
 int				main(int ac, char **av, char **envp)
 {
 
@@ -295,10 +318,10 @@ int				main(int ac, char **av, char **envp)
 			{
 				ft_putchar('\n');
 				ft_putchar('\n');
-				ft_print_lexdat(lexdat);
+				// ft_print_lexdat(lexdat);
 			}
-
 		}
+		try_redirect(line);
 		ft_add_history(line); //add line to history
 		ft_putchar('\n');
 		ft_putstr("-------");
@@ -310,14 +333,6 @@ int				main(int ac, char **av, char **envp)
 		ft_putchar('\n');
 		ft_free_lexdat(lexdat);
 		lexdat = NULL;
-		// ft_putstr("--------------------");
-		// ft_putchar('\n');
-		// ft_putstr(line->is_highlight);
-		// while (line->start_select < line->end_select)
-		// {
-		// 	ft_putchar(line->line[line->start_select]);
-		// 	line->start_select++;
-		// }
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 		if (ft_strequ(line->line, "env"))
