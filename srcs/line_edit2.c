@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   line_edit2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/25 20:09:29 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/19 19:29:35 by tchapka          ###   ########.fr       */
+/*   Created: 2018/02/26 20:15:50 by jecarol           #+#    #+#             */
+/*   Updated: 2018/02/26 20:15:51 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void add_to_line(t_edit *line, int buf)
 	line->cursor_pos++;
 	if (line->cursor_pos == line->max_size)
 	{
-	line->line = ft_freejoinstr(line->line, buf2);
-	ft_putchar(buf);
+		line->line = ft_freejoinstr(line->line, buf2);
+		ft_putchar(buf);
 	}
 	else if (line->cursor_pos != line->max_size)
 		ft_insert(buf, line);
