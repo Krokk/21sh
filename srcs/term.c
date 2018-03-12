@@ -6,11 +6,28 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:14 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:25 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 20:09:55 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
+
+t_parsing		*init_data(void)
+{
+	t_parsing *data;
+
+	data = ft_memalloc(sizeof(t_parsing));
+	data->index = -1;
+	data->simpleq = 0;
+	data->doubleq = 0;
+	data->checker = 0;
+	data->latest = 0;
+	data->subber = 0;
+	data->breaker = 1;
+	data->to_node1 = NULL;
+	data->to_node2 = NULL;
+	return (data);
+}
 
 struct winsize		ft_init(t_edit *line)
 {

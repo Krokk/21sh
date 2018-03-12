@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:02 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:25 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/11 17:22:50 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,36 @@ char				**ft_set_paths(t_env *env)
 			return (apaths);
 		}
 		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+
+char		**t_env_to_array(t_env **venv)
+{
+	int		i;
+	char	**result;
+	t_env	*tmp;
+	int		j;
+
+	j = 0;
+	tmp = *venv;
+	while (*venv)
+	{
+		j++;
+		venv = &(*venv)->next;
+	}
+	if (tmp != NULL)
+	{
+		if (!(result = ft_memalloc(sizeof(char**) * (j + 1))))
+			return (NULL);
+		i = -1;
+		while (tmp)
+		{
+			result[++i] = ft_strdup(tmp->var);
+			tmp = tmp->next;
+		}
+		return (result);
 	}
 	return (NULL);
 }

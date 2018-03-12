@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/26 20:24:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 21:12:16 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,21 @@
 # include <sys/ioctl.h>
 # include <curses.h>
 # include <term.h>
+# include <fcntl.h>
 
-enum
+typedef enum 		e_priorities
 {
 	SEMICOLON,
+	AND_OR,
 	PIPE,
-	DOUBLEPIPE,
-	CHEVRONLEFT,
-	CHEVRONRIGHT,
-	DOUBLECHEVRONLEFT,
-	DOUBLECHEVRONRIGHT,
-	DOUBLESPER
-};
+	REDIR,
+	COMMAND,
+	ARG
+	// CHEVRONLEFT,
+	// CHEVRONRIGHT,
+	// DOUBLECHEVRONLEFT,
+	// DOUBLECHEVRONRIGHT
+}						t_priorities;
 
 typedef struct			s_norm
 {
@@ -47,22 +50,25 @@ typedef struct			s_norm
 typedef	struct		s_edit
 {
 	struct winsize 	sz;
-	int					cursor_pos;
-	int					max_size;
+	int						cursor_pos;
+	int						max_size;
 	char 					*line;
+	char					**line_split;
 	int 					select_mode;
-	int           		start_select;
+	int           start_select;
 	int	           	end_select;
 	char 					*is_highlight;
-	struct s_hstr *hstr; //pointer to the last element added
-	struct s_hstr *curr; //pointer to current element of the history
+	char					*left;
+	char					*right;
+	struct s_hstr		*hstr; //pointer to the last element added
+	struct s_hstr		*curr; //pointer to current element of the history
 }							t_edit;
 
 typedef struct 	s_hstr
 {
 	char 					*cmd;
-	struct s_hstr *up;
-	struct s_hstr *down;
+	struct s_hstr		*up;
+	struct s_hstr		*down;
 } 							t_hstr;
 
 void ft_add_history(t_edit *line);
@@ -77,12 +83,37 @@ typedef struct			s_env
 
 typedef struct			s_lexit
 {
-	char					*input;
-	char					**to_exec;
-	char					**allpaths;
-	int					lexem;			//0 = input / 1 = operator
+	char							*input;
+	char							**allpaths;
+	char							**args;
+	char              **env;
+	int								prio;
+	struct s_lexit		*left;
+	struct s_lexit		*right;
 	struct s_lexit		*next;
-}							t_lexit;
+	struct s_lexit		*prev;
+}										t_lexit;
+
+
+typedef struct			s_parsing
+{
+	int					index;
+	int					anex;
+	int					quote_checker;
+	int					simpleq;
+	int					doubleq;
+	int					checker;
+	int					redir_c;
+	int					latest;
+	int					subber;
+	int					breaker;
+	char					*to_node1;
+	char					*to_node2;
+	char					to_node_op[2];
+	char					*ptr;
+	char					*ptr2;
+}							t_parsing;
+
 
 struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
@@ -104,17 +135,28 @@ void add_to_line(t_edit *line, int buf);
 void handle_key(int buf, t_edit *line);
 void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
 int 				ft_pre_parser(t_edit *line);
-int 				ft_parser(t_lexit *lexdat);
+int 				parse_list(t_lexit *list);
 void			ft_freetab(char **table);
 void 				ft_free_lexdat(t_lexit *lexdat);
 void				ft_env(char **cmd, t_env *env);
-void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
+void				ft_execs(t_lexit *lexdat, t_env *env);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
-
-
+char				**ft_prep_input(char *str);
 void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
 void			ft_push_env(t_env **lst, char *var);
+t_lexit 			*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
+int 				ft_isstrprint(char *str);
+char				*find_cmd(char **apaths, char *cmd);
+char **t_env_to_array(t_env **env);
+void exec_tree(t_lexit *lexdat, t_env *env);
+void				parsing_listing(t_lexit **list, char *input, t_env *env);
+t_lexit 			*init_node(t_lexit *tmp, t_lexit **list, t_env *env, t_parsing *data);
+t_lexit			*add_node(char *input, t_env *env);
+t_parsing		*init_data(void);
+int				quote_checker(t_parsing *data, char *input);
+int				check_first_node(t_parsing *data, char *input);
+void				get_full_op(t_parsing *data, char *input);
 
 #endif

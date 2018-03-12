@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:30 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/11 17:34:00 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void			ft_push_env(t_env **lst, char *var)
 {
 	t_env		*tmp;
 
+	
 	tmp = *lst;
 	if (!tmp)
 		*lst = add_env(var);
