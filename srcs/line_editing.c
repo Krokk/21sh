@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   line_editing.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/02 23:57:58 by jecarol          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/sh.h"
 
@@ -103,7 +92,7 @@ void ft_move_it(t_edit *line, int check)
 		line->max_size--;
 	}
 	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-	ft_putstr(line->line);
+	ft_putstr_fd(line->line, STDOUT_FILENO);
 	line->cursor_pos = ft_strlen(line->line) + 2;
 }
 

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   tokenizer.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/10 18:03:27 by rfabre           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/sh.h"
 
 
@@ -17,17 +5,17 @@ int 				ft_isstrprint(char *str)
 {
 	int i;
 
-	i = -1;
-	while (str[++i])
-		return (ft_isprint(str[i]));
-	return (0);
+	i = 0;
+	while (str[i] && ft_isprint(str[i]))
+		i++;
+	return (i);
 }
 
 char				**ft_prep_input(char *str)
 {
 	char			**tmp;
 	char			*tmp1;
-	int				i;
+	int			i;
 
 	i = 0;
 	tmp = ft_strsplit(str, ' ');
@@ -41,7 +29,7 @@ char				**ft_prep_input(char *str)
 	return (tmp);
 }
 
-t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
+t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *delim, int prio)
 {
 	t_lexit	*keep;
 	t_lexit	*tmp;
@@ -49,9 +37,9 @@ t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
 
 	keep = NULL;
 	tmp = list;
-	if (prio == 7 || !list)
+	if (prio == ERROR || !list)
 		return (NULL);
-	while (tmp != compare)
+	while (tmp != delim)
 	{
 		if (tmp->prio == prio)
 			keep = tmp;
@@ -60,9 +48,9 @@ t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
 	if (keep)
 	{
 		keep->left = ft_tree_it(list, keep, prio);
-		keep->right = ft_tree_it(keep->next, compare, prio + 1);
+		keep->right = ft_tree_it(keep->next, delim, prio + 1);
 		return (keep);
 	}
 	else
-		return(ft_tree_it(list, compare, prio + 1));
+		return(ft_tree_it(list, delim, prio + 1));
 }

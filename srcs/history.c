@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   history.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/26 20:15:40 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:15:42 by jecarol          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/sh.h"
 
@@ -29,8 +18,8 @@ void ft_arrow_up(t_edit *line)
   		ft_left_arrow(line);
   		cnt++;
   	}
-  	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-  ft_putstr(line->curr->cmd);
+	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+  ft_putstr_fd(line->curr->cmd, STDOUT_FILENO);
   free(line->line);
   line->line = ft_strdup(line->curr->cmd);
   line->max_size = ft_strlen(line->curr->cmd) + 2;
@@ -53,7 +42,7 @@ void ft_arrow_down(t_edit *line)
     if (line->curr->down)
     {
       line->curr = line->curr->down;
-      ft_putstr(line->curr->cmd);
+      ft_putstr_fd(line->curr->cmd, STDOUT_FILENO);
       free(line->line);
       line->line = ft_strdup(line->curr->cmd);
       line->max_size = ft_strlen(line->curr->cmd) + 2;
