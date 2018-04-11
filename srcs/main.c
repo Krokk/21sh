@@ -326,7 +326,7 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	if (mod != -1)
 	{
 		if (!ft_strcmp(list->args[0], "env"))
-			ft_env(list, env, sh);
+			builtin_env(list, env, sh);
 		else if (!ft_strcmp(list->args[0], "echo"))
 			ft_echo(list);
 		if (mod)

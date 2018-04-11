@@ -1,4 +1,3 @@
-/* 
 #include "../includes/sh.h"
 
 char			**ft_fill_envp(t_env *env)

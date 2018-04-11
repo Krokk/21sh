@@ -149,11 +149,11 @@ void			ft_empty_env(t_env **env, int *i)
 	*i += 1;
 }
 
-void			update_list(t_lexit *list, int i, t_sh *sh)
+void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
 
-	apaths = ft_set_paths(sh->env);
+	apaths = ft_set_paths(env);
 	ft_strdel(&list->input);
 	ft_strdel(&list->command);
 	list->input = ft_strdup(list->args[i]);
@@ -175,11 +175,11 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		if (!ft_strcmp(list->args[i], "-i"))
 			ft_empty_env(&new_env, &i);
-		if (list->args[i] && list->args[i][0] != '=' && ft_strchr(list->args[i], '='))
+		while (list->args[i] && list->args[i][0] != '=' && ft_strchr(list->args[i], '='))
 			ft_env_with_var(&new_env, list->args[i++]);
 		if (list->args[i])
 		{
-			update_list(list, i, sh);
+			update_list(list, i, new_env);
 			execs(list, new_env, sh);
 		}
 		else
