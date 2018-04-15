@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
+/*   Updated: 2018/04/15 02:32:42 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/sh.h"
 
@@ -152,20 +163,26 @@ void			ft_empty_env(t_env **env, int *i)
 void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
+	char		**tmp;
 
 	apaths = ft_set_paths(env);
 	ft_strdel(&list->input);
 	ft_strdel(&list->command);
 	list->input = ft_strdup(list->args[i]);
-	list->args = list->args + i;
+
+	tmp = copypasta(list->args, i);
+	ft_freetab(list->args);
+	list->args = copypasta(tmp, 0);
+	ft_freetab(tmp);
 	list->prio = get_prio(list->args[0], &list->command, apaths);
-	ft_freetab(apaths);
+	if (apaths)
+		ft_freetab(apaths);
 }
 
-void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
+void			ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	t_env		*new_env;
-	int			i;
+	int		i;
 
 	i = 1;
 	new_env = (env ? ft_copy_list(env) : NULL);
@@ -175,17 +192,21 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		if (!ft_strcmp(list->args[i], "-i"))
 			ft_empty_env(&new_env, &i);
-		while (list->args[i] && list->args[i][0] != '=' && ft_strchr(list->args[i], '='))
+		if (list->args[i] && list->args[i][0] != '=' && ft_strchr(list->args[i], '='))
 			ft_env_with_var(&new_env, list->args[i++]);
 		if (list->args[i])
 		{
 			update_list(list, i, new_env);
-			execs(list, new_env, sh);
+			if (check_if_builtin(list))
+				exec_no_fork(list, new_env, sh, buf);
+			else if (list->prio != ARG)
+				execs(sh->execs, sh->env, sh, buf);
+			else
+				ft_errors(7, NULL, sh->execs->args[0]);
 		}
 		else
 			ft_print_env(new_env);
 	}
 	if (new_env)
 		free_env(new_env);
-	exit (0);
 }

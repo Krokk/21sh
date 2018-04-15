@@ -1,5 +1,5 @@
 *.o
-objs
+objs/
 21sh
 .DS_STORE
-libft.a
+libft/objs/

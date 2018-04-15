@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/11 15:27:41 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/15 02:22:52 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef	struct			s_edit
 	int						cursor_pos;
 	int						max_size;
 	char 						*line;
+	char						*heredoc;
 int 							select_mode;
 	int       			    start_select;
 	int	    	       	end_select;
@@ -105,8 +106,17 @@ typedef struct			s_redir
 	char					*right_target;
 	int					redir_left;
 	char					*left_target;
+	char					*endoff;
+	// char					**follow_up;
 	struct s_redir		*next;
 }							t_redir;
+
+typedef struct			s_hdc
+{
+	int				ret_stop[2];
+	int				hd;
+	char				*tmp;
+}							t_hdc;
 
 typedef struct			s_parsing
 {
@@ -155,12 +165,18 @@ typedef struct			s_sh
 	t_fday				fd;
 }							t_sh;
 
+typedef struct			s_execs
+{
+	t_lexit		*tmp;
+	t_lexit		*start;
+	t_lexit		*copy;
+	t_lexit		*head;
+	t_lexit		*tmp2;
+	int			exec_number;
+}							t_execs;
 
 
 
-
-
-struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
 void ft_left_arrow(t_edit *line);
 void ft_right_arrow(t_edit *line);
@@ -175,15 +191,15 @@ void ft_highlight(t_edit *line);
 void ft_go_start(t_edit *line);
 void ft_cut(t_edit *line);
 void select_copy_cut(t_edit *line, int buf);
-void ft_prompt(void);
+void ft_prompt(int prompt);
 void add_to_line(t_edit *line, int buf);
-void handle_key(int buf, t_edit *line);
+void handle_key(int buf, t_edit *line, int heredoc);
 void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
 int 				ft_pre_parser(t_edit *line);
 int 				parse_list(t_lexit *list);
 void			ft_freetab(char **table);
 void 				ft_free_lexdat(t_lexit *lexdat);
-void				ft_env(t_lexit *list, t_env *env, t_sh *sh);
+void				ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf);
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
@@ -202,11 +218,25 @@ t_parsing		*init_data(void);
 int				quote_checker(t_parsing *data, char *input);
 int				check_first_node(t_parsing *data, char *input);
 void				get_full_op(t_parsing *data, char *input);
-void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
+void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf);
 void				free_list(t_lexit *list);
 char			**copypasta(char **src, int i);
-void				execs(t_lexit *list, t_env *env, t_sh *sh);
+void				execs(t_lexit *list, t_env *env, t_sh *sh, int buf);
 int				get_prio(char *str, char **command, char **apaths);
 void			ft_echo(t_lexit *list);
+void 			ft_cd(char **args, t_env **env);
+void        exec_unsetenv(char **commands, t_env **venv);
+void exec_setenv(char **cmd, t_env **env);
+int            ft_modify_tenv(t_env **venv, char *new, char *contents);
+int            find_t_env(t_env **venv, char *commands);
+void        ft_lst_add_tenv(t_env **alst, t_env *new);
+int            find_t_env_array(char *env, char *search);
+void        ft_lst_add_tenv(t_env **alst, t_env *new);
+void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh, int buf);
+int				check_if_builtin(t_lexit *list);
+void			listen_signal(void);
+void				init_term(void);
+void				set_term_back(void);
+
 
 #endif
