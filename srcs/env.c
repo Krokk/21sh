@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:42 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/18 13:40:33 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,22 +164,24 @@ void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
 	char		**tmp;
-
+	t_lexit *tmp1;
+	tmp1 = list;
 	apaths = ft_set_paths(env);
-	ft_strdel(&list->input);
-	ft_strdel(&list->command);
-	list->input = ft_strdup(list->args[i]);
-
-	tmp = copypasta(list->args, i);
-	ft_freetab(list->args);
+	if (tmp1->input)
+		ft_strdel(&tmp1->input);
+	if (tmp1->command)
+		ft_strdel(&tmp1->command);
+	tmp1->input = ft_strdup(tmp1->args[i]);
+	tmp = copypasta(tmp1->args, i);
+	ft_freetab(tmp1->args);
 	list->args = copypasta(tmp, 0);
 	ft_freetab(tmp);
-	list->prio = get_prio(list->args[0], &list->command, apaths);
+	tmp1->prio = get_prio(tmp1->args[0], &list->command, apaths);
 	if (apaths)
 		ft_freetab(apaths);
 }
 
-void			ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 {
 	t_env		*new_env;
 	int		i;
@@ -198,9 +200,9 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf)
 		{
 			update_list(list, i, new_env);
 			if (check_if_builtin(list))
-				exec_no_fork(list, new_env, sh, buf);
+				exec_no_fork(list, new_env, sh);
 			else if (list->prio != ARG)
-				execs(sh->execs, sh->env, sh, buf);
+				execs(sh->execs, sh->env, sh);
 			else
 				ft_errors(7, NULL, sh->execs->args[0]);
 		}

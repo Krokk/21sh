@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/15 02:22:52 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/19 03:49:02 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,32 +38,27 @@ typedef enum 				e_priorities
 	COMMAND,
 	ARG,
 	ERROR
-	// CHEVRONLEFT,
-	// CHEVRONRIGHT,
-	// DOUBLECHEVRONLEFT,
-	// DOUBLECHEVRONRIGHT
 }								t_priorities;
-
-typedef struct				s_norm
-{
-	int						buf;
-	int						ret;
-	int						i;
-}								t_norm;
 
 typedef	struct			s_edit
 {
 	struct winsize 		sz;
 	int						cursor_pos;
+	int						cur_mod_pos;
 	int						max_size;
-	char 						*line;
-	char						*heredoc;
-int 							select_mode;
-	int       			    start_select;
-	int	    	       	end_select;
-	char 						*is_highlight;
-	char						*left;
-	char						*right;
+	int						max_mod_size;
+	int 					select_mode;
+	int       		start_select;
+	int	    	    end_select;
+	int						prompt_mode;
+	int						quote_complete;
+	char					*quote;
+	char 					*line;
+	char					*heredoc;
+	char 					*is_highlight;
+	char					*left;
+	char					*right;
+	char					*q_str;
 	struct s_hstr			*hstr; //pointer to the last element added
 	struct s_hstr			*curr; //pointer to current element of the history
 }								t_edit;
@@ -90,9 +85,14 @@ typedef struct			s_lexit
 	char					*input;
 	char					**args;
 	char					*command;
+	int					is_pipe;
 	int					prio;
 	int					first;
+	int					agr;
 	int					checker;
+	int					fdsrc;
+	int					fddst;
+	int					fdclose;
 	struct s_redir		*redirs;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
@@ -107,7 +107,6 @@ typedef struct			s_redir
 	int					redir_left;
 	char					*left_target;
 	char					*endoff;
-	// char					**follow_up;
 	struct s_redir		*next;
 }							t_redir;
 
@@ -138,8 +137,7 @@ typedef struct			s_parsing
 	int					empty;
 	t_env				*env;
 	char					*to_node;
-	char					*to_node2;
-	char					to_node_op[2];
+	char					to_node_op[3];
 	char					*ptr;
 	char					*ptr2;
 }							t_parsing;
@@ -148,6 +146,7 @@ typedef struct			s_fday
 {
 	int					in;
 	int					out;
+	int					saved_fd;
 	int					saved_file;
 	int					saved_in;
 	int					saved_out;
@@ -161,8 +160,9 @@ typedef struct			s_sh
 	t_lexit				*lexdat;
 	t_lexit				*execs;
 	t_edit				*line;
-	t_norm				*values;
 	t_fday				fd;
+	int					buf;
+	int					buf2;
 }							t_sh;
 
 typedef struct			s_execs
@@ -193,17 +193,16 @@ void ft_cut(t_edit *line);
 void select_copy_cut(t_edit *line, int buf);
 void ft_prompt(int prompt);
 void add_to_line(t_edit *line, int buf);
-void handle_key(int buf, t_edit *line, int heredoc);
+void handle_key(t_sh *sh);
 void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
 int 				ft_pre_parser(t_edit *line);
 int 				parse_list(t_lexit *list);
 void			ft_freetab(char **table);
 void 				ft_free_lexdat(t_lexit *lexdat);
-void				ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf);
-void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
+void				ft_env(t_lexit *list, t_env *env, t_sh *sh);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
-char				**ft_prep_input(char *str);
+char				**ft_prep_input(char *str, t_sh *sh);
 char			**ft_fill_envp(t_env *env);
 
 void			ft_print_env(t_env *env);
@@ -212,16 +211,16 @@ void			ft_push_env(t_env **lst, char *var);
 t_lexit 			*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 int 				ft_isstrprint(char *str);
 char				*find_cmd(char **apaths, char *cmd);
-int				parsing_listing(t_lexit **list, char *input, t_env *env);
-t_lexit			*add_node(char *input, t_env *env);
+int				parsing_listing(t_lexit **list, char *input, t_env *env, t_sh *sh);
+t_lexit			*add_node(char *input, t_sh *sh);
 t_parsing		*init_data(void);
-int				quote_checker(t_parsing *data, char *input);
+int				quote_checker(char *input, t_sh *sh);
 int				check_first_node(t_parsing *data, char *input);
 void				get_full_op(t_parsing *data, char *input);
-void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf);
+void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
 void				free_list(t_lexit *list);
 char			**copypasta(char **src, int i);
-void				execs(t_lexit *list, t_env *env, t_sh *sh, int buf);
+void				execs(t_lexit *list, t_env *env, t_sh *sh);
 int				get_prio(char *str, char **command, char **apaths);
 void			ft_echo(t_lexit *list);
 void 			ft_cd(char **args, t_env **env);
@@ -232,11 +231,34 @@ int            find_t_env(t_env **venv, char *commands);
 void        ft_lst_add_tenv(t_env **alst, t_env *new);
 int            find_t_env_array(char *env, char *search);
 void        ft_lst_add_tenv(t_env **alst, t_env *new);
-void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh, int buf);
+void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh);
 int				check_if_builtin(t_lexit *list);
 void			listen_signal(void);
 void				init_term(void);
 void				set_term_back(void);
+int				switch_fd(t_lexit *list, t_sh *sh, int *mod);
+void				reset_fd(t_sh *sh, int mod);
+void				do_pipes(t_lexit *list, t_env *env, t_sh *sh);
+int			get_number(t_sh *sh);
+int 				double_check(t_lexit *lst);
+t_lexit			*copy_segment(t_sh *sh, t_lexit *src);
+int				check_semi(t_sh *sh, t_lexit *lst);
+void				execute(t_sh *sh);
+void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh);
+void				execute_binary(t_lexit *list, t_env *env, t_sh *sh);
+void				assign_redir(t_lexit *list, t_sh *sh);
+void				do_heredoc(t_lexit *list, t_sh *sh);
+void				init_valhd(t_hdc *valhd);
+void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd);
+t_execs			*init_igo(t_sh *sh);
+void					init_structs(t_edit *line, t_fday *fd);
+int				get_execs(t_sh *sh);
+void				cut_list(t_sh *sh, t_execs *igo);
+void				exec_segment(t_sh *sh, t_execs *igo);
+void				exec_last_segment(t_sh *sh, t_execs *igo);
+int				free_igo(t_execs *igo, int mod);
+void				trim_redir(t_lexit *list);
+void swap_quote(t_execs *igo, t_sh *sh);
 
 
 #endif

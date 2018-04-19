@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:33:03 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/19 03:38:28 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,39 @@ int 				ft_isstrprint(char *str)
 	return (i);
 }
 
-char				**ft_prep_input(char *str)
+char        **string_to_tab(char *str)
+{
+	char	**t;
+
+	t = (char **)malloc(sizeof(*t) * 2);
+	if (t == NULL)
+		return (NULL);
+	t[0] = ft_strdup(str);
+	// ft_strdel(&str);
+	t[1] = NULL;
+	return(t);
+}
+
+char				**ft_prep_input(char *str, t_sh *sh)
 {
 	char			**tmp;
 	char			*tmp1;
 	int			i;
 
 	i = 0;
-	tmp = ft_strsplit(str, ' ');
-	while (tmp[i])
+	if (!sh->line->quote_complete)
 	{
-		tmp1 = ft_strtrim(tmp[i]);
-		ft_strdel(&tmp[i]);
-		tmp[i] = tmp1;
-		i++;
+		tmp = ft_strsplit(str, ' ');
+		while (tmp[i])
+		{
+			tmp1 = ft_strtrim(tmp[i]);
+			ft_strdel(&tmp[i]);
+			tmp[i] = tmp1;
+			i++;
+		}
 	}
+	else
+			tmp = string_to_tab(str);
 	return (tmp);
 }
 
