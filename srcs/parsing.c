@@ -177,7 +177,8 @@ void			last_node(t_lexit **list, char *input, t_parsing *data, t_sh *sh)
 		j++;
 	}
 	tmpn = ft_strsub(input, i, j);
-	content = ft_strtrim(tmpn);
+	if (!sh->line->quote_complete)
+		content = ft_strtrim(tmpn);
 	if (!tmp)
 	{
 		// ft_putendl("OULA");

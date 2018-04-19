@@ -7,7 +7,7 @@ void init_line_edit(t_edit *line)
 	line->start_select = 0;
 	line->end_select = 0;
 	line->prompt_mode = 0;
-	line->q_str = NULL;
+	line->q_str = ft_strnew(0);
 	line->quote_complete = 0;
 	line->is_highlight = ft_strnew(0);
 }

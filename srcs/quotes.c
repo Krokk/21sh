@@ -33,9 +33,10 @@ void simple_quote_work(t_sh *sh, int *ret_stop)
     if (sh->buf == 3)
     {
         *ret_stop = 1;
-        set_term_back();
+        // ft_strdel(&sh->line->q_str);
         sh->line->quote_complete = 0;
         sh->line->prompt_mode = 0;
+        set_term_back();
     }
     if (ft_strchr(sh->line->q_str, '\''))
     {
@@ -44,7 +45,7 @@ void simple_quote_work(t_sh *sh, int *ret_stop)
         del_after_quote(sh);
         sh->line->quote_complete = 1;
         sh->line->prompt_mode = 0;
-        // ft_putchar('\n');
+        ft_putchar('\n');
     }
     else if (sh->buf == 10)
     {

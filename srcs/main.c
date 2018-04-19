@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/19 03:59:44 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/19 05:00:53 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ void				ft_21sh(t_sh *sh)
 	p_l_x(sh);
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
-	ft_line_reset(sh->line);
+	// ft_line_reset(sh->line); // A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE
 }
 
 int				main(int ac, char **av, char **envp)
