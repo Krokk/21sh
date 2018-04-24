@@ -116,29 +116,13 @@ int				get_execs(t_sh *sh)
 		return (free_igo(igo, 1));
 }
 
-void swap_quote(t_execs *igo, t_sh *sh)
-{
-	if (sh->line->quote_complete)
-	{
-		while (igo->head->input && !ft_strchr(igo->head->input, '\''))
-			igo->head = igo->head->next;
-		if (igo->head->input && sh->line->quote_complete)
-		{
-				// ft_strdel(&igo->head->input);
-				// ft_strdel(&igo->head->args[0]);
-				igo->head->args[0] = sh->line->q_str;
-				igo->head->input = sh->line->q_str;
-		}
-	}
-}
-
 void				exec_segment(t_sh *sh, t_execs *igo)
 {
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
 		trim_redir(igo->head);
-		swap_quote(igo, sh);
+		// swap_quote(igo, sh);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
 		execute(sh);
@@ -159,7 +143,7 @@ void				exec_last_segment(t_sh *sh, t_execs *igo)
 	{
 		assign_redir(igo->head, sh);
 		trim_redir(igo->head);
-		swap_quote(igo, sh);
+		// swap_quote(igo, sh);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		execute(sh);
 		while (igo->copy->first != 1)

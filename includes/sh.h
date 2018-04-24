@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/19 04:52:04 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/23 15:38:20 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef	struct			s_edit
 	int	    	    end_select;
 	int						prompt_mode;
 	int						quote_complete;
+	int           array_size;
 	char					*quote;
 	char 					*line;
 	char					*heredoc;
@@ -93,6 +94,7 @@ typedef struct			s_lexit
 	int					fdsrc;
 	int					fddst;
 	int					fdclose;
+	int					quote;
 	struct s_redir		*redirs;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
@@ -161,6 +163,8 @@ typedef struct			s_sh
 	t_lexit				*execs;
 	t_edit				*line;
 	t_fday				fd;
+	char					*hd_state;
+
 	int					buf;
 	int					buf2;
 }							t_sh;
@@ -202,7 +206,7 @@ void 				ft_free_lexdat(t_lexit *lexdat);
 void				ft_env(t_lexit *list, t_env *env, t_sh *sh);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
-char				**ft_prep_input(char *str, t_sh *sh);
+char				**ft_prep_input(char *str);
 char			**ft_fill_envp(t_env *env);
 
 void			ft_print_env(t_env *env);
@@ -259,6 +263,8 @@ void				exec_last_segment(t_sh *sh, t_execs *igo);
 int				free_igo(t_execs *igo, int mod);
 void				trim_redir(t_lexit *list);
 void swap_quote(t_execs *igo, t_sh *sh);
-
+char **ft_replace_quote(char **array, t_sh *sh, char **input);
+char			**ft_strsplit_21(char const *s, char c, char d, char e);
+void				clean_list(t_lexit *tmp);
 
 #endif

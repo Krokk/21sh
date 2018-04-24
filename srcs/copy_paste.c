@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:44 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/24 14:52:10 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void ft_highlight(t_edit *line)
 	tmp = ft_strndup(line->line, line->start_select);
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	ft_putstr_fd(tgetstr("mr", NULL), STDOUT_FILENO);
-    if (line->start_select > line->end_select)
-      swap_norme(line); // remplacer par un ternaire
+  if (line->start_select > line->end_select)
+    swap_norme(line); // remplacer par un ternaire
 	tmp2 = ft_strsub(line->line, line->start_select , (line->end_select - line->start_select));
 	ft_putstr_fd(tmp2, STDOUT_FILENO);
 	free(tmp);

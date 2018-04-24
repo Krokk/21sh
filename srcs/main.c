@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/19 05:00:53 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/24 15:33:37 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int				get_prio(char *str, char **command, char **apaths)
 			*command = ft_strdup(str);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">") || str[0] == '>' || str[1] == '>')
+	else if (!ft_strcmp(str, ">") || (str[0] == '>' && str[1] == '&') || (str[1] == '>' && str[2] == '&'))
 		return (REDIR_R);
 	else if (!ft_strcmp(str, ">>"))
 		return (REDIR_RR);
@@ -130,12 +130,18 @@ void				parsing_exing(t_sh *sh)
 	{
 		assign_redir(sh->list, sh);
 		trim_redir(sh->list);
-		// swap_quote(sh->execs, sh);
+		// while (sh->list)
+		// {
+		// 	ft_putendl(sh->list->args[0]);
+		// 	sh->list = sh->list->next;
+		// }
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs && sh->execs->args)
 			execute(sh);
 		free_list(sh->list);
 		sh->list = NULL;
+		if (sh->hd_state)
+			ft_strdel(&sh->hd_state);
 	}
 }
 
@@ -158,6 +164,8 @@ void				p_l_x(t_sh *sh)
 		free_list(sh->list);
 		sh->list = NULL;
 	}
+	if (sh->hd_state)
+		ft_strdel(&sh->hd_state);
 }
 
 void				ft_21sh(t_sh *sh)
@@ -181,7 +189,7 @@ void				ft_21sh(t_sh *sh)
 	p_l_x(sh);
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
-	// ft_line_reset(sh->line); // A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE// A REMETTRE
+	ft_line_reset(sh->line);
 }
 
 int				main(int ac, char **av, char **envp)

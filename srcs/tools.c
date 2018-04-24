@@ -17,6 +17,145 @@ void				cut_list(t_sh *sh, t_execs *igo)
 	}
 }
 
+int		ft_cnt_parts(const char *s, char c, char d, char e)
+{
+	int		cnt;
+	int		in_substring;
+	size_t i;
+
+	i = 0;
+	in_substring = 0;
+	cnt = 0;
+	while (i <= (ft_strlen(s)  -1))
+	{
+		if (s[i] == d)
+		{
+			i++;
+			while (s[i] != '\0' && s[i] != d)
+			{
+				if (s[i] == '\0')
+				{
+			 		cnt--;
+					break ;
+				}
+				i++;
+			}
+			cnt++;
+		}
+		if (s[i] == e)
+		{
+			i++;
+			while (s[i] != '\0' && s[i] != e)
+			{
+				if (s[i] == '\0')
+				{
+					cnt--;
+					break ;
+				}
+				i++;
+			}
+			cnt++;
+		}
+		if (in_substring == 1 && s[i] == c)
+			in_substring = 0;
+		if (in_substring == 0 && s[i] != c && s[i] != d && s[i] != e)
+		{
+			in_substring = 1;
+			cnt++;
+		}
+		i++;
+	}
+	return (cnt);
+}
+
+int		ft_wlen(const char *s, char c)
+{
+	int		len;
+
+	len = 0;
+	while (*s != c && *s != '\0')
+	{
+		len++;
+		s++;
+	}
+	return (len);
+}
+
+int				is_quote_closed(char const *s, char quote)
+{
+	int			i;
+
+	i = 1;
+	while (s[i] && s[i] != quote)
+		i++;
+	if (s[i] == quote)
+		return (1);
+	return(0);
+}
+
+char			**ft_strsplit_21(char const *s, char c, char d, char e)
+{
+	char	**t;
+	int		nb_word;
+	int		index;
+	int		i;
+
+	i = 0;
+	if (s == NULL)
+		return (NULL);
+	index = 0;
+	nb_word = ft_cnt_parts((const char *)s, c, d, e);
+	t = (char **)malloc(sizeof(*t) * (nb_word + 1));
+	t[nb_word] = NULL;
+	if (t == NULL)
+		return (NULL);
+	while (nb_word--)
+	{
+		while (*s == c && *s != '\0')
+			s++;
+		if (*s == d)
+		{
+			if (is_quote_closed(s, d))
+			{
+				s++;
+				t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, d));
+				index++;
+				s = s + ft_wlen(s, d);
+				s++;
+			}
+			else
+			{
+				t[index] = ft_strdup(&d);
+				index++;
+			}
+		}
+		else if (*s == e)
+		{
+			if (is_quote_closed(s, e))
+			{
+				s++;
+				t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, e));
+				index++;
+				s = s + ft_wlen(s, e);
+				s++;
+			}
+			else
+			{
+				t[index] = ft_strdup(&e);
+				index++;
+			}
+		}
+		else
+		{
+			t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, c));
+			index++;
+			s = s + ft_wlen(s, c);
+		}
+	}
+	return (t);
+}
+
+
 char			**ft_fill_envp(t_env *env)
 {
 	char		**ret;
@@ -66,24 +205,61 @@ char				*find_cmd(char **apaths, char *cmd)
 	return (NULL);
 }
 
+void 				add_quote_to_args(char **args, char *str)
+{
+	int i;
+
+	i = 0;
+	if (!args[0])
+	{
+		args = (char **)malloc(sizeof(char *) * 2);
+		args[0] = ft_strdup(str);
+		args[1] = NULL;
+	}
+	else
+	{
+		while(args[i])
+			i++;
+		args[i] = ft_strdup(str);
+		args[i + 1] = NULL;
+	}
+}
+
+void			replace_quote(t_lexit *node, t_sh *sh)
+{
+	int i;
+
+	i = 0;
+	while (node->args[i])
+	{
+		if (node->args[i][0] == '\'' || node->args[i][0] == '\"')
+		{
+			ft_strdel(&node->args[i]);
+			node->args[i] = ft_strdup(sh->line->q_str);
+		}
+		i++;
+	}
+}
+
 t_lexit			*add_node(char *input, t_sh *sh)
 {
 	t_lexit		*tmp;
-	char			**apaths;
+	char		**apaths;
+	int			i;
 
-	apaths = ft_set_paths(sh->env);
+	i = 0;
 	if (!input)
 		return (NULL);
 	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
 		return (NULL);
+	(void)sh;
+	apaths = ft_set_paths(sh->env);
+	tmp->input = ft_strtrim(input);
+	tmp->args = ft_prep_input(input);
+	replace_quote(tmp, sh);
 	tmp->next = NULL;
 	tmp->left = 0;
 	tmp->right = 0;
-	if (!sh->line->quote_complete)
-		tmp->input = ft_strtrim(input);
-	else
-		tmp->input = input;
-	tmp->args = ft_prep_input(input, sh);
 	tmp->redirs = NULL;
 	tmp->checker = 0;
 	tmp->agr = 0;

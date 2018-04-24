@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:50 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/24 16:19:11 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,33 @@
 
 void ft_left_arrow(t_edit *line)
 {
-	if (line->cursor_pos >= 3)
+	if (line->prompt_mode == 0 && line->cursor_pos > 2)
 	{
 		line->cursor_pos--;
+		ft_putstr_fd("\033[1D", STDOUT_FILENO);
+	}
+	if (line->cur_mod_pos > 8 && line->prompt_mode == 1)
+	{
+		line->cur_mod_pos--;
+		ft_putstr_fd("\033[1D", STDOUT_FILENO);
+	}
+	if (line->cur_mod_pos > 6 && line->prompt_mode == 2)
+	{
+		line->cur_mod_pos--;
 		ft_putstr_fd("\033[1D", STDOUT_FILENO);
 	}
 }
 
 void ft_right_arrow(t_edit *line)
 {
-	if (line->cursor_pos < line->max_size)
+	// ft_putnbr(line->cursor_pos);
+	// ft_putnbr(line->sz.ws_col);
+	if (line->prompt_mode == 0 && line->cursor_pos < line->max_size)
 	{
 		line->cursor_pos++;
 		ft_putstr_fd("\033[1C", STDOUT_FILENO);
 	}
-	if (((line->cursor_pos) % line->sz.ws_col) == 0)
+	else if (((line->cursor_pos) % line->sz.ws_col) == 0)
 	{
 		tputs(tgetstr("do", NULL), 1, ft_pointchar);
 		tputs(tgetstr("cr", NULL), 1, ft_pointchar);
@@ -37,16 +49,22 @@ void ft_right_arrow(t_edit *line)
 
 void ft_endkey(t_edit *line)
 {
-	while (line->cursor_pos < line->max_size)
-	{
-		ft_right_arrow(line);
-	}
+	if (line->prompt_mode == 2)
+		while (line->cur_mod_pos < line->max_mod_size)
+			ft_right_arrow(line);
+	else
+		while (line->cursor_pos < line->max_size)
+			ft_right_arrow(line);
 }
 
 void ft_homekey(t_edit *line)
 {
-	while (line->cursor_pos > 2)
-	{
-		ft_left_arrow(line);
-	}
+	if (line->prompt_mode == 2)
+		while (line->cur_mod_pos > 6)
+			ft_left_arrow(line);
+	else
+		while (line->cursor_pos > 2)
+			ft_left_arrow(line);
+
+
 }
