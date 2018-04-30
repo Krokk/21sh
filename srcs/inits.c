@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inits.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:11:16 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:11:17 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
-void init_line_edit(t_edit *line)
+void			init_line_edit(t_edit *line)
 {
 	ioctl(STDERR_FILENO, TIOCGWINSZ, &line->sz);
 	line->select_mode = 0;
@@ -13,7 +25,7 @@ void init_line_edit(t_edit *line)
 	line->is_highlight = ft_strnew(0);
 }
 
-void					init_structs(t_edit *line, t_fday *fd)
+void			init_structs(t_edit *line, t_fday *fd)
 {
 	line->hstr = NULL;
 	ft_line_reset(line);
@@ -28,7 +40,7 @@ void					init_structs(t_edit *line, t_fday *fd)
 
 t_parsing		*init_data(void)
 {
-	t_parsing *data;
+	t_parsing	*data;
 
 	data = ft_memalloc(sizeof(t_parsing));
 	data->env = NULL;
@@ -44,6 +56,9 @@ t_parsing		*init_data(void)
 	data->breaker = 1;
 	data->empty = 0;
 	data->to_node = NULL;
+	data->content = NULL;
+	data->tmpn = NULL;
+	data->empty_input = NULL;
 	data->to_node_op[0] = '\0';
 	data->to_node_op[1] = '\0';
 	data->to_node_op[2] = '\0';
@@ -60,7 +75,18 @@ t_execs			*init_igo(t_sh *sh)
 	igo->copy = NULL;
 	igo->head = NULL;
 	igo->tmp2 = NULL;
-	igo->exec_number = get_number(sh);
+	igo->exec_number = get_segment_number(sh);
 	sh->execs = NULL;
 	return (igo);
+}
+
+void			init_redirs(t_lexit *node)
+{
+	node->redirs = (t_redir *)malloc(sizeof(t_redir));
+	node->checker = 1;
+	node->redirs->redir_right = 0;
+	node->redirs->redir_left = 0;
+	node->redirs->right_target = NULL;
+	node->redirs->left_target = NULL;
+	node->redirs->endoff = NULL;
 }

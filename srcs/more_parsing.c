@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   more_parsing.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 17:40:18 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/30 14:25:35 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 int				check_semi(t_sh *sh, t_lexit *lst)
@@ -9,7 +21,7 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	i = 0;
 	while (tmp)
 	{
-		if (tmp->prio == SEMICOLON)
+		if (tmp->next && tmp->prio == SEMICOLON)
 			return (1);
 		if (!tmp->next)
 		{
@@ -21,66 +33,52 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	return (0);
 }
 
-int			get_number(t_sh *sh)
+int				check_pipe(t_lexit *node, int checker)
 {
-	char		**tmp;
-	int			i;
-
-	i = 0;
-	tmp = ft_strsplit(sh->line->line, ';');
-	while (tmp[i])
-		i++;
-	ft_freetab(tmp);
-	return (i);
-}
-
-t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
-{
-	t_lexit		*dst;
-
-	dst = add_node(src->input, sh);
-	dst->redirs = src->redirs;
-	return (dst);
-}
-
-int					check_pipe(t_lexit *node, int checker)
-{
-	if (!checker && (node->prev->prio != COMMAND || node->next->prio != COMMAND))
-		return (node->prev->prio != COMMAND ?
-	ft_errors(6, NULL, node->prev->args[0]) :
-	ft_errors(6, NULL, node->next->args[0]));
+	if (!checker)
+	{
+		if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
+			return (node->prev->prio != COMMAND ?
+					ft_errors(6, NULL, node->prev->args[0]) :
+					ft_errors(6, NULL, node->next->args[0]));
+	}
+	else if (checker == 1)
+	{
+		if (node->next->prio != COMMAND)
+			return (ft_errors(6, NULL, node->next->args[0]));
+	}
 	return (1);
 }
 
-int					check_redirr(t_lexit *node, int checker)
+int				check_redirr(t_lexit *node, int checker)
 {
 	if (!checker)
 		return (ft_errors(6, NULL, node->prev->args[0]));
 	return (1);
 }
 
-int					check_redirl(t_lexit *node)
+int				check_redirl(t_lexit *node)
 {
 	if (node->prio == HEREDOC)
 	{
 		if (node->prev->prio != COMMAND)
-			return(ft_errors(6, NULL, node->prev->args[0]));
+			return (ft_errors(6, NULL, node->prev->args[0]));
 	}
 	else if ((open(node->next->args[0], O_RDONLY)) == -1)
-		return(ft_errors(4, NULL, node->next->args[0]));
+		return (ft_errors(4, NULL, node->next->args[0]));
 	return (1);
 }
 
-int 				double_check(t_lexit *lst)
+int				double_check(t_lexit *lst)
 {
-	int checker;
-	t_lexit *tmp;
+	int			checker;
+	t_lexit		*tmp;
 
 	checker = 0;
 	tmp = lst;
 	if (tmp)
 	{
-		while(tmp)
+		while (tmp)
 		{
 			if (tmp->prio == COMMAND)
 				checker = 1;
@@ -89,14 +87,13 @@ int 				double_check(t_lexit *lst)
 					return (0);
 			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
 				if (!check_redirr(tmp, checker))
-					break ;
+					return (0);
 			if (tmp->prio == REDIR_L || tmp->prio == HEREDOC)
 				if (!check_redirl(tmp))
-					break ;
+					return (0);
 			tmp = tmp->next;
 		}
-		if (!tmp)
-			return (1);
+		return (1);
 	}
 	return (0);
 }

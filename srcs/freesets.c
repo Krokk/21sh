@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/23 19:07:20 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 17:39:23 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,7 @@ void			ft_line_reset(t_edit *line)
 	line->curr = NULL;
 }
 
-void				free_tree(t_lexit *lexdat)
-{
-	if (lexdat)
-	{
-		if (lexdat->left)
-			free_tree(lexdat->left);
-		if (lexdat->right)
-			free_tree(lexdat->right);
-		if (lexdat->input && lexdat->input[0])
-			ft_strdel(&lexdat->input);
-		if (lexdat->command && lexdat->command[0])
-			ft_strdel(&lexdat->command);
-		if (lexdat->redirs && lexdat->redirs->right_target)
-			ft_strdel(&lexdat->redirs->right_target);
-		if (lexdat->redirs && lexdat->redirs->left_target)
-			ft_strdel(&lexdat->redirs->left_target);
-	}
-}
-
-void				clean_list(t_lexit *tmp)
+void			clean_list(t_lexit *tmp)
 {
 	if (tmp->input)
 		ft_strdel(&tmp->input);
@@ -76,7 +57,7 @@ void				clean_list(t_lexit *tmp)
 	}
 }
 
-void				free_list(t_lexit *list)
+void			free_list(t_lexit *list)
 {
 	t_lexit		*tmp;
 	int			checker;
@@ -85,12 +66,12 @@ void				free_list(t_lexit *list)
 	tmp = list;
 	if (tmp)
 	{
-		while(list)
+		while (list)
 		{
 			tmp = list;
 			list = list->next;
 			clean_list(tmp);
-				free(tmp->redirs);
+			free(tmp->redirs);
 			if (tmp)
 				free(tmp);
 		}

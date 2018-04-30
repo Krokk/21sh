@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:50:06 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/28 20:40:52 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 void		ft_lst_add_tenv(t_env **alst, t_env *new)
@@ -66,17 +78,16 @@ void		exec_unsetenv(char **commands, t_env **venv)
 
 	i = -1;
 	while (commands[++i])
-  {
-    if (look_for_env(venv, commands[i]))
-  		remove_one_t_env(venv, commands[i]);
-    else
-    {
-		ft_putstr_fd("unset: ", 2);
-      ft_putstr_fd(commands[i], 2);
-      ft_putendl_fd(" variable not found", 2);
-    }
-  }
+	{
+		if (look_for_env(venv, commands[i]))
+			remove_one_t_env(venv, commands[i]);
+		else
+		{
+			ft_putstr_fd("unset: ", 2);
+			ft_putstr_fd(commands[i], 2);
+			ft_putendl_fd(" variable not found", 2);
+		}
+	}
 	if (i == 0)
 		ft_putendl_fd("usage : unset <environment variable>", 2);
-
 }
