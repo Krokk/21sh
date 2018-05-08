@@ -47,13 +47,12 @@ $ make && ./21sh
 | ------------- |:----------------      | -----:| -----:|
 | Commande du path | Éxecute une commande depuis le path | ✓ | ✗ |
 | Séparateur `;` | Éxecute une commande puis une autre | ✓ | ✓ |
-| Séparateur <code>&&#124;</code> | Éxecute une commande puis une autre | ✓ | ✓ |
 | Opérateur `>` | Redirige la sortie standard vers un autre file descriptor| ✓ | ✓ |
 | Opérateur `>>` | Redirige la sortie standard vers un autre file descriptor (ajout à la fin)| ✓ | ✓ |
 | Opérateur `<<` | Heredoc |  ✓ | ✓ |
 | Opérateur `<` | Redirige l'entrée standard vers la commande| ✓ | ✓ |
 | Pipe <code>&#124;</code>| (ex ls <code>&#124;</code> base64)| ✓ | ✓ |
-| Echappement des guillements dans les commandes | Exemple: "l"s | ✓ | ✓ |
+| Echappement des guillements dans les commandes | Exemple: "ls" | ✓ | ✓ |
 | Agregateur de file descriptor | Exemple: ls nosuchfile 2>&- | ✓ | ✓ |
 | Gestion avancée des erreurs | Exemple: ls ; ; | ✓ | ✓ |
 | Gestion du tilde | Exemple: cd ~ | ✓ | ✓ |
