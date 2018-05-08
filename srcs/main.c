@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/30 14:25:31 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 17:23:55 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void			parsing_exing(t_sh *sh)
 	{
 		assign_redir(sh->list, sh);
 		trim_redir(sh->list);
+		kick_semi(sh->list);
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs && sh->execs->args)
 			execute(sh);
@@ -51,7 +52,7 @@ void			p_l_x(t_sh *sh)
 
 	i = 0;
 	number = 0;
-	if (parsing_listing(&sh->list, sh->line->line, sh->env, sh))
+	if (parsing_listing(&sh->list, sh->env, sh))
 	{
 		number = get_execs(sh);
 		if (number == 1)

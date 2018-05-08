@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 20:04:35 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 00:54:51 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_lexit			*single_node(t_lexit *tmp, t_lexit **l, t_sh *sh, char *i)
 {
-	*l = add_node(i, sh);
+	*l = add_node_proxy(i, sh);
 	tmp = *l;
 	return (tmp);
 }
@@ -62,37 +62,36 @@ void			last_node(t_lexit **list, char *s, t_parsing *data, t_sh *sh)
 	lnk_last_noop(data, sh, &tmp, list);
 }
 
-void			setup_parsing(t_parsing *data, t_env *env, char *input)
+int				look_for_op(t_sh *sh, int pos)
 {
-	data->env = env;
-	data->empty_input = ft_strtrim(input);
-	if (data->empty_input[0] == '\0')
-		data->empty = 1;
-	ft_strdel(&data->empty_input);
-	data->len = ft_strlen(input);
+	while (sh->line->line[pos] && ft_isspace(sh->line->line[pos]))
+		pos++;
+	if (sh->line->line[pos] == ';')
+		return (0);
+	return (1);
 }
 
-int				parsing_listing(t_lexit **list, char *s, t_env *env, t_sh *sh)
+int				parsing_listing(t_lexit **list, t_env *env, t_sh *sh)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
 
 	tmp = *list;
 	data = init_data();
-	setup_parsing(data, env, s);
-	if (quote_checker(s, sh) && !data->empty)
+	if (setup_parsing(data, env, sh))
 	{
-		while (((data->index + 1) <= data->len) && s[++data->index])
+		if (quote_checker(sh->line->line, sh) && !data->empty)
 		{
-			if ((test_l_r(data, s, list, sh) == -1))
+			while (((data->index + 1) <= data->len) &&
+			sh->line->line[++data->index])
 			{
-				ft_errors(1, &data->ptr[0], NULL);
-				free(data);
-				return (0);
+				ignore_quotes(sh->line->line, data, 1);
+				if ((test_l_r(data, sh->line->line, list, sh) == -1))
+					return (parsing_error(&data));
 			}
+			if (sh->line->line && !*(list))
+				tmp = single_node(tmp, list, sh, sh->line->line);
 		}
-		if (s && !*(list))
-			tmp = single_node(tmp, list, sh, s);
 	}
 	ft_memdel((void **)&data);
 	return (1);

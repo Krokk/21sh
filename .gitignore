@@ -1,6 +1,5 @@
 *.o
-objs/
-21sh
-.DS_STORE
-libft/objs/
+libft.a
 21sh.dSYM/
+21sh
+objs/

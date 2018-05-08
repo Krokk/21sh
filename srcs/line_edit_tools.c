@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:32 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:14:39 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/02 14:15:10 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,11 @@ void			std_move_it(t_insert *vals, t_edit *line, int check)
 		line->cursor_pos--;
 		line->max_size--;
 	}
+	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 	ft_putstr_fd(line->line, STDOUT_FILENO);
 	line->cursor_pos = ft_strlen(line->line) + 2;
-	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+	if (line->max_size % line->sz.ws_col == 0)
+		tputs(tgetstr("do", NULL), 1, ft_pointchar);
 }
 
 void			ft_move_it(t_edit *line, int check)
@@ -61,7 +63,6 @@ void			ft_move_it(t_edit *line, int check)
 void			print_cpy(int buf, t_edit *line)
 {
 	char		str[5];
-	char		tmp[2];
 	int			i;
 
 	i = 0;
@@ -72,8 +73,6 @@ void			print_cpy(int buf, t_edit *line)
 	str[4] = '\0';
 	while (str[i])
 	{
-		tmp[0] = str[i];
-		tmp[1] = '\0';
 		add_to_line(line, (int)str[i]);
 		i++;
 	}

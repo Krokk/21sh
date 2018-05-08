@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/30 14:26:12 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 15:38:01 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,8 +248,7 @@ void				ft_push_env(t_env **lst, char *var);
 t_lexit				*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 int					ft_isstrprint(char *str);
 char				*find_cmd(char **apaths, char *cmd);
-int					parsing_listing(t_lexit **list,
-					char *input, t_env *env, t_sh *sh);
+int					parsing_listing(t_lexit **list, t_env *env, t_sh *sh);
 t_lexit				*add_node(char *input, t_sh *sh);
 t_parsing			*init_data(void);
 int					quote_checker(char *input, t_sh *sh);
@@ -279,7 +278,7 @@ void				reset_fd(t_sh *sh, int mod);
 void				do_pipes(t_lexit *list, t_env **env, t_sh *sh);
 int					get_segment_number(t_sh *sh);
 int					double_check(t_lexit *lst);
-t_lexit				*copy_segment(t_sh *sh, t_lexit *src);
+t_lexit				*copy_segment(t_lexit *src);
 int					check_semi(t_sh *sh, t_lexit *lst);
 void				execute(t_sh *sh);
 void				execute_builtin(t_lexit *list, t_env **env, t_sh *sh);
@@ -291,7 +290,7 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd);
 t_execs				*init_igo(t_sh *sh);
 void				init_structs(t_edit *line, t_fday *fd);
 int					get_execs(t_sh *sh);
-void				cut_list(t_sh *sh, t_execs *igo);
+void				cut_list(t_execs *igo);
 void				exec_segment(t_sh *sh, t_execs *igo);
 void				exec_last_segment(t_sh *sh, t_execs *igo);
 int					free_igo(t_execs *igo, int mod);
@@ -342,5 +341,19 @@ int					is_quote_closed(char const *s, char quote);
 int					ft_wlen(const char *s, char c);
 void				match_quotes(t_split *vals, const char *s, char d, char e);
 void				lol(t_sh *sh, t_execs *igo);
+int					setup_parsing(t_parsing *data, t_env *env, t_sh *sh);
+void				ignore_quotes(char *s, t_parsing *data, int mod);
+int					look_for_op(t_sh *sh, int pos);
+int					ignore_first_semi(t_sh *sh);
+int					parsing_error(t_parsing **data);
+void				kick_semi(t_lexit *list);
+void				ft_left_arrow_q(t_edit *line);
+void				ft_right_arrow_q(t_edit *line);
+void				ft_left_arrow_select_mode(t_edit *line);
+void				go_down(t_edit *line);
+void				replace_quote(t_lexit *node, t_sh *sh);
+t_lexit				*add_node_proxy(char *input, t_sh *sh);
+void				ignore_quotes_more(char *s, t_parsing *data);
+int					return_free(char *tmp, char *tmp1);
 
 #endif
