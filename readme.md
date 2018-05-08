@@ -3,7 +3,7 @@ mini UNIX command interpreter.
 
 # Installation
 ```
-$ git clone https://github.com/rfabrecode/21sh.git
+$ git clone https://github.com/krokk/21sh.git
 ```
 
 # Utilisation
