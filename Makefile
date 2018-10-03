@@ -12,7 +12,6 @@
 NAME = 21sh
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
 
 SRCS_LIST = main.c line_movement.c line_edit.c copy_paste.c term.c\
 line_edit_more.c env.c history.c tokenizer.c parsing.c freesets.c\

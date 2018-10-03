@@ -22,9 +22,9 @@
 # include <signal.h>
 # include <termios.h>
 # include <sys/ioctl.h>
-# include <curses.h>
 # include <term.h>
 # include <fcntl.h>
+# include <curses.h>
 
 typedef enum		e_priorities
 {

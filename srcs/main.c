@@ -47,10 +47,8 @@ void			parsing_exing(t_sh *sh)
 
 void			p_l_x(t_sh *sh)
 {
-	int			i;
 	int			number;
 
-	i = 0;
 	number = 0;
 	if (parsing_listing(&sh->list, sh->env, sh))
 	{

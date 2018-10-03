@@ -60,9 +60,7 @@ void			clean_list(t_lexit *tmp)
 void			free_list(t_lexit *list)
 {
 	t_lexit		*tmp;
-	int			checker;
 
-	checker = 0;
 	tmp = list;
 	if (tmp)
 	{

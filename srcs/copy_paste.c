@@ -79,11 +79,9 @@ void		ft_paste(t_edit *line)
 
 void		ft_cut(t_edit *line)
 {
-	int		i;
 	char	*tmp;
 	char	*tmp2;
 
-	i = 0;
 	tmp = ft_strndup(line->line, line->start_select);
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	tmp2 = ft_strsub(line->line, line->end_select,
